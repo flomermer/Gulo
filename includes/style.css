@@ -5,39 +5,90 @@
     padding: 0;
 }
 header, nav, main, section, article, footer, aside {
-    display: block;
+    display: block;    
+}
+header{
+    margin-top:5%;
+    font-size: 8vw;
 }
 
 body {
-    background: url('../images/backgrounds/mobileBG.jpg') no-repeat center center fixed;
-    background-size: cover;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
+    background: url('../images/backgrounds/mobileOpacityBG.jpg') no-repeat center center fixed;
+    background-size: cover;    
     direction: rtl;
     font-family: 'Alef', sans-serif;
+    font-size: 2em;
 }
 
-#pageLogin header #logo {
-    display: block;    
-    margin:0 auto;
-    width: 240px;
-    height: 130px;
-    background: url('../images/logo/barcodeLogo2.png');
-    margin-top: 20%;
+footer{
+    position:fixed;
+    bottom:0px;    
+    height:7%;
 }
-#pageLogin main{
-    margin-top:30%;
-    margin-right: 15%;
+footer.overlay{    
+    background-color:white;        
+    filter: blur(10px);
+    z-index:-1;
 }
-#pageLogin main section{
-    margin-bottom: 15%;    
-    font-size:30px;    
-    padding-right:20%;    
-    background-position: right;    
-    background-repeat: no-repeat;    
-    text-shadow:1px 1px 6px white;
+a {
+    color: inherit;
 }
-#pageLogin main section:nth-child(1){background-image: url('../images/icons/login/facebook.png');}
-#pageLogin main section:nth-child(2){background-image: url('../images/icons/login/google.png');}
-#pageLogin main section:nth-child(3){background-image: url('../images/icons/login/mail.png');}
+form button[type='submit'] {
+    background: white;
+    margin-top:10%;
+}
+
+/*pageLogin*/
+
+    #pageLogin header #logo {
+        display: block;    
+        margin:0 auto;
+        width: 240px;
+        height: 130px;
+        background: url('../images/logo/barcodeLogo2.png');
+        margin-top: 20%;
+    }
+    #pageLogin main{
+        margin-top:30%;
+        margin-right: 15%;
+    }
+    #pageLogin main section{
+        font-size: 7vw;
+        margin-bottom: 15%;        
+        padding-right:20%;    
+        background-position: right;    
+        background-repeat: no-repeat;    
+        text-shadow:1px 1px 6px white;
+    }
+    #pageLogin main section:nth-child(1){background-image: url('../images/icons/login/facebook.png');}
+    #pageLogin main section:nth-child(2){background-image: url('../images/icons/login/google.png');}
+    #pageLogin main section:nth-child(3){background-image: url('../images/icons/login/mail.png');}
+
+/*pageMainLists*/
+    #pageMainLists .main-list:first-child{
+        margin-top: 10%;
+    }
+    #pageMainLists .main-list {
+        font-size:6.5vw;
+        margin-bottom: 5%;
+        line-height: 15vw;
+        background-color:white;    
+        cursor: pointer;
+    }
+    #pageMainLists .main-list div:nth-child(2){
+        font-size: 5vw;    
+    }
+
+/*addMainList page*/
+    #pageAddMainList main{
+        margin-top:10%;
+    }
+    #formAddMainList button[type='submit'] {        
+        margin-top: 20%;
+        margin-bottom:20%;
+    }
+
+
+@media (min-width:641px){ /*for tablet*/
+    
+}
