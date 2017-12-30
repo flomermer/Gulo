@@ -9,4 +9,16 @@ header, nav, main, section, article, footer, aside {
 body {
     background: url('../images/backgrounds/mobileBG.jpg') no-repeat center center fixed;
     background-size: cover;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+}
+
+#pageLogin header #logo {
+    display: block;    
+    margin:0 auto;
+    width: 240px;
+    height: 130px;
+    background: url('../images/logo/barcodeLogo.png');
+    margin-top: 20%;
 }
