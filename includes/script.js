@@ -55,21 +55,31 @@
 /*mainListItems*/
     function toggleListView() {        
         var mode = $(this).attr("data-mode");
-        if (mode == '1') {
+        if (mode == '1') { //show only items
             $(this).attr("data-mode", '2');
             $("span[data-toggle='collapse']").hide();
             $("ul.collapse").collapse('show');
-        } else if (mode == '2') {
+        } else if (mode == '2') { //show categories too
             $(this).attr("data-mode", '1');
             $("span[data-toggle='collapse']").show();
             $("ul.collapse").collapse('hide');
         }        
     }
-    function listOptionsAction() {
-        var option = $(this).attr("data-option");        
-        if (option == 'toggleListView') {
-            toggleListView();
-        }
+    function shareList(){
+        var str = '';
+        var arr = $("ul.ul-main-list-category li");
+        arr.each(function (i) {
+            str += $(this).text();
+            if (i != arr.length - 1)
+                str += "%0A"; // <BR> in whatsapp api
+        })                
+        window.location.href = "whatsapp://send?text=" + str;
+    } 
+    function addListToCart() {
+        alert("list was added to cart...");
+    }
+    function itemClick() {
+        $(this).toggleClass("item-checked");
     }    
 
 $("document").ready(function () {
@@ -85,5 +95,8 @@ $("document").ready(function () {
     }
     else if ($page == "pageMainListItems") {
         $(".listOptions[data-option='toggleListView']").click(toggleListView);   
+        $(".listOptions[data-option='shareList']").click(shareList);   
+        $(".listOptions[data-option='addToCart']").click(addListToCart);   
+        $("ul.ul-main-list-category li").click(itemClick);
     }    
 })

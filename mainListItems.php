@@ -90,11 +90,13 @@
                 
         <footer class="footer fixed-bottom">
             <div class="container">      
-                <div class="row">    
-                    <div class="col-2"></div>
-                    <div class="col-8 text-center">Adiel Perez</div>                    
-                    <div class="col-2"><i class="fas fa-user-circle"></i></div>
-                </div>                
+                <a href="profile.html">
+                    <div class="row">    
+                        <div class="col-2"></div>
+                        <div class="col-8 text-center">Adiel Perez</div>                    
+                        <div class="col-2"><i class="fas fa-user-circle"></i></div>
+                    </div>                
+                </a>
             </div>                
         </footer>
         <footer class="footer fixed-bottom overlay"></footer>         
