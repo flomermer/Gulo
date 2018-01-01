@@ -1,9 +1,11 @@
 {
   "ExpandedNodes": [
     "",
-    "\\images",
     "\\images\\backgrounds",
+    "\\images\\icons\\login",
+    "\\images\\logo",
     "\\includes"
   ],
+  "SelectedNode": "\\includes\\script.js",
   "PreviewInSolutionExplorer": false
 }

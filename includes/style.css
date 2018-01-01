@@ -12,9 +12,9 @@ header{
     font-size: 8vw;
 }
 
+
 body {
-    background: url('../images/backgrounds/mobileOpacityBG.jpg') no-repeat center center fixed;
-    background-size: cover;    
+    background: url('../images/backgrounds/mobileOpacityBG.jpg'); /* no-repeat center center fixed*/
     direction: rtl;
     font-family: 'Alef', sans-serif;
     font-size: 2em;
@@ -74,6 +74,7 @@ form button[type='submit'] {
         line-height: 15vw;
         background-color:white;    
         cursor: pointer;
+        opacity: 0.7;
     }
     #pageMainLists .main-list div:nth-child(2){
         font-size: 5vw;    
@@ -87,6 +88,35 @@ form button[type='submit'] {
         margin-top: 20%;
         margin-bottom:20%;
     }
+
+/*mainListItems*/
+.ul-main-list {
+    margin-top: 5%;
+    list-style: none;
+    font-size: 7vw;
+    text-align: right;        
+}
+.ul-main-list > li{
+    margin-bottom: 3vw;
+}
+.ul-main-list li .fa-plus{    
+    cursor:pointer;
+    margin-left: 4vw;
+}
+.ul-main-list > li > ul{
+    list-style: none;
+    font-size: 5vw;     
+}
+#pageMainListItems main .footer{
+   position: fixed;
+   bottom: 10%; 
+   left:5vw;
+   direction:ltr;
+}
+#pageMainListItems .footer .listOptions svg {
+    font-size:12vw;
+    margin-right:3vw;
+}
 
 
 @media (min-width:641px){ /*for tablet*/
