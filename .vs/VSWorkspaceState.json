@@ -1,11 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\images\\backgrounds",
-    "\\images\\icons\\login",
-    "\\images\\logo",
     "\\includes"
   ],
-  "SelectedNode": "\\includes\\script.js",
+  "SelectedNode": "\\addManualItem.php",
   "PreviewInSolutionExplorer": false
 }

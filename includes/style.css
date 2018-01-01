@@ -117,13 +117,12 @@ form button[type='submit'] {
    direction:ltr;
 }
 #pageMainListItems .footer .listOptions svg {
-    font-size:12vw;
+    font-size:10vw;
     margin-right:3vw;
 }
 .item-checked{
     text-decoration: line-through;
 }
-
 
 @media (min-width:641px){ /*for tablet*/
     

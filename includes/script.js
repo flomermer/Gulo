@@ -57,12 +57,14 @@
         var mode = $(this).attr("data-mode");
         if (mode == '1') { //show only items
             $(this).attr("data-mode", '2');
-            $("span[data-toggle='collapse']").hide();
-            $("ul.collapse").collapse('show');
+            $("span[data-toggle='collapse']").hide();            
+            $("ul.collapse:visible").attr("data-wasVisible", "1");
+            $("ul.collapse").collapse('show');            
         } else if (mode == '2') { //show categories too
             $(this).attr("data-mode", '1');
             $("span[data-toggle='collapse']").show();
-            $("ul.collapse").collapse('hide');
+            $("ul.collapse[data-wasVisible!=1]").collapse('hide');                                                
+            $("ul.collapse:visible").attr("data-wasVisible", "0");
         }        
     }
     function shareList(){

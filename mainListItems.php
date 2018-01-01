@@ -2,7 +2,7 @@
 <html>
 <head>    
     <?php
-        $listID = $_POST["listID"];
+        $listID = $_GET["listID"];
         if (is_null($listID)){
             header("Location: mainLists.html");
             exit();
@@ -34,6 +34,11 @@
                     <a href="mainLists.html"><i class="far fa-arrow-alt-circle-right"></i></a>
                 </div>                
                 <div class="col-8 text-center" id="mainListName"><?php echo $listName;?></div>                
+                <div class="col-2 text-left">
+                    <a href="addManualItem.html">
+                        <i id="addManuallItem" class="fas fa-plus-circle"></i>
+                    </a>
+                </div>
             </div>
         </header>          
         <main>
@@ -73,19 +78,23 @@
                             <li>מחדד</li>                            
                         </ul>
                     </li>
-                </ul>
+                </ul>               
             </div>
-            <div class="footer">
-                <span class="listOptions" data-option="addToCart">
-                    <i class="fas fa-shopping-cart"></i>
-                </span>
-                <span class="listOptions" data-option="shareList">
-                    <i class="fas fa-share-alt"></i>
-                </span>
-                <span class="listOptions" data-option="toggleListView" data-mode="1">
-                    <i class="fas fa-list-ul"></i>
-                </span>                
-            </div>
+            <footer class="footer fixed-bottom">                      
+                <div class="row">
+                    <div class="col-12 text-left">
+                        <span class="listOptions" data-option="addToCart">
+                            <i class="fas fa-shopping-cart"></i>
+                        </span>
+                        <span class="listOptions" data-option="shareList">
+                            <i class="fas fa-share-alt"></i>
+                        </span>
+                        <span class="listOptions" data-option="toggleListView" data-mode="1">
+                            <i class="fas fa-list-ul"></i>
+                        </span>
+                    </div>                                            
+                </div>
+            </footer>
         </main>
                 
         <footer class="footer fixed-bottom">

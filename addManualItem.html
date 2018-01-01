@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+<head>    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Gulo</title>    
+
+    <!-- Jquery CDN-->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.2/js/all.js"></script>
+    
+    <link rel="stylesheet" href="includes/style.css" />
+    <script src="includes/script.js"></script>    
+</head>
+<body id="pageAddMainList">
+    <div class="container">
+        <header>
+            <div class="row">                    
+                <div class="col-2">
+                    <a href="javascript: history.back();"><i class="far fa-arrow-alt-circle-right"></i></a>
+                </div>                
+                <div class="col-8 text-center">הוספת פריט ידנית</div>                
+            </div>
+        </header>          
+        <main>
+            <div class="container">                        
+                <form action="addManualItem.php" method="post">
+                    <div class="form-group text-right">
+                        <label for="txtAddListItemName">שם הפריט:</label>
+                        <input type="text" class="form-control" id="txtAddListItemName" placeholder="לדוגמא: קפה נמס" required/>
+                    </div>                    
+                    <div class="form-group row text-right">                                                
+                        <label for="txtAddListItemQuantity" class="col-12">כמות:</label>
+                        <div class="col-3">
+                            <input type="number" class="form-control" name="txtAddListItemQuantity" value="1" min="1" max="99" step="1" required/>
+                        </div>                        
+                    </div>  
+                    <div class="form-group row">
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-lg">
+                                <i class="fas fa-cart-plus"></i> הוספת פריט חדש
+                            </button>
+                        </div>
+                    </div>
+                </form>    
+            </div>            
+        </main>
+                
+        <footer class="footer fixed-bottom">            
+            <div class="container">      
+                <a href="profile.html">
+                    <div class="row">
+                        <div class="col-2"></div>
+                        <div class="col-8 text-center">Adiel Perez</div>
+                        <div class="col-2"><i class="fas fa-user-circle"></i></div>
+                    </div>
+                </a>
+            </div>                
+        </footer>
+        <footer class="footer fixed-bottom overlay"></footer>         
+    </div>    
+</body>
+</html>
