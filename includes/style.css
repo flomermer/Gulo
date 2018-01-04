@@ -3,32 +3,77 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 header, nav, main, section, article, footer, aside {
     display: block;    
 }
-header{
-    margin-top:5%;
-    font-size: 8vw;
-}
+
+.page{display:none;}
+.page:nth-child(1){display:block;}
 
 body {
-    background: url('../images/backgrounds/mobileOpacityBG.jpg'); /* no-repeat center center fixed*/
     direction: rtl;
-    font-family: 'Alef', sans-serif;
+    font-family: 'Alef', sans-serif;    
     font-size: 2em;
 }
+body > .wrapper{
+    background: url('../images/backgrounds/desktopOpacityBG.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    margin:auto;    
+    width: 100vw;
+    height: 100vh;    
+    padding: 3vh 5vw;
+    position:relative;
+}
 
-footer{
-    position:fixed;
-    bottom:0px;    
-    height:7%;
+header{
+    height: 8vh;
+    line-height: 8vh;
+    font-size: 90%;
 }
-footer.overlay{    
-    background-color:white;        
+main{
+    height: 78vh;      
+    overflow: scroll;
+    position:relative;
+}
+
+footer.main{    
+    position: fixed;
+    bottom: 0;    
+    width: inherit;
+    height: 8vh;    
+    line-height:8vh;  
+    margin: 0 -5vw;
+    text-align: center;    
+}
+footer.main > .overlay{        
+    position: absolute;
+    height: inherit;
+    width: 100%;
+    background-color: white;
     filter: blur(10px);
-    z-index:-1;
 }
+footer.secondary {
+    position: sticky;
+    bottom: 8vh;        
+    height: 8vh;
+    line-height: 8vh;
+    margin: 0 0vw;        
+    direction:ltr;
+}
+footer.secondary svg {
+    margin-right: 4vw;
+}
+
+
+::-webkit-scrollbar { /*hide scrollbar*/
+    display: none;
+}
+
 a {
     color: inherit;
     text-decoration:none;
@@ -38,26 +83,31 @@ a:active{
 }
 form button[type='submit'] {
     background: white;
-    margin-top:10%;
+    margin-top:10vh;
+}
+form label{
+    font-size:70%;
 }
 
 /*pageLogin*/
-
+    #pageLogin > .wrapper{        
+        background-image: url('../images/backgrounds/mobileBG.jpg');
+    }
     #pageLogin header #logo {
         display: block;    
         margin:0 auto;
         width: 240px;
         height: 130px;
         background: url('../images/logo/barcodeLogo2.png');
-        margin-top: 20%;
+        margin-top: 7vh;
     }
     #pageLogin main{
-        margin-top:30%;
+        margin-top:20vh;
         margin-right: 15%;
     }
     #pageLogin main section{
-        font-size: 7vw;
-        margin-bottom: 15%;        
+        font-size: 130%;
+        margin-bottom: 6vh;  
         padding-right:20%;    
         background-position: right;    
         background-repeat: no-repeat;    
@@ -67,63 +117,121 @@ form button[type='submit'] {
     #pageLogin main section:nth-child(2){background-image: url('../images/icons/login/google.png');}
     #pageLogin main section:nth-child(3){background-image: url('../images/icons/login/mail.png');}
 
-/*pageMainLists*/
-    #pageMainLists .main-list:first-child{
-        margin-top: 10%;
+/*pageMainLists*/    
+    .page[data-page=mainLists] main{
+        margin-top: 3vh;
     }
-    #pageMainLists .main-list {
-        font-size:6.5vw;
-        margin-bottom: 5%;
-        line-height: 15vw;
+    .page[data-page=mainLists] .main-list {
+        font-size:80%;
+        margin-bottom: 3vh;
+        height: 8vh;
+        line-height: 8vh;
+        
         background-color:white;    
         cursor: pointer;
         opacity: 0.7;
+        border-radius:10px;
     }
-    #pageMainLists .main-list div:nth-child(2){
-        font-size: 5vw;    
+    .page[data-page=mainLists] .main-list div:nth-child(2){
+        font-size: 70%;    
     }
 
 /*addMainList page*/
-    #pageAddMainList main{
-        margin-top:10%;
+    .page[data-page=addMainList] main{
+        margin-top:2vh;
     }
-    #formAddMainList button[type='submit'] {        
-        margin-top: 20%;
-        margin-bottom:20%;
+    .page[data-page=addMainList] button[type='submit'] {                
+        font-size: 70%;
     }
 
 /*mainListItems*/
-.ul-main-list {
-    margin-top: 5%;
-    list-style: none;
-    font-size: 7vw;
-    text-align: right;        
-}
-.ul-main-list > li{
-    margin-bottom: 3vw;
-}
-.ul-main-list li .fa-plus{    
-    cursor:pointer;
-    margin-left: 4vw;
-}
-.ul-main-list > li > ul{
-    list-style: none;
-    font-size: 5vw;     
-}
-#pageMainListItems main .footer{
-   position: fixed;
-   bottom: 10%; 
-   left:5vw;
-   direction:ltr;
-}
-#pageMainListItems .footer .listOptions svg {
-    font-size:10vw;
-    margin-right:3vw;
-}
-.item-checked{
-    text-decoration: line-through;
-}
+    .page[data-page='mainListItems'] .ul-main-list {
+        margin-top: 3vh;
+        list-style: none;
+        font-size: 4vh;
+        text-align: right;                
+    }
+    .page[data-page='mainListItems'] .ul-main-list > li{
+        margin-bottom: 5vh;
+    }
+    .page[data-page='mainListItems'] .ul-main-list li .fa-plus{    
+        cursor:pointer;
+        margin-left: 4%;
+    }
+    .page[data-page='mainListItems'] .ul-main-list > li > ul{
+        list-style: none;
+        font-size: 3vh;
+    }        
+    .item-checked{
+        text-decoration: line-through;
+    }    
 
-@media (min-width:641px){ /*for tablet*/
+/*addToCartConfirmation*/
+    .page[data-page='addToCartConfirmation'] main{
+        margin-top:15vh;
+        font-size:70%;
+        text-align:center;
+    }
+
+/*profile*/
+    .page[data-page='profile'] main{
+        text-align:center;        
+    }    
+    .imgProfile{
+        margin-bottom:5vh;
+    }
+    .imgProfile img{
+        width:100px;
+        height:100px;        
+    }
+    .profileRow{
+        height:10vh;
+        line-height:10vh;
+        margin-bottom: 4vh;
+    }
+    .profileRow .overlay{
+        position: absolute;
+        height: inherit;
+        width: 100%;
+        background-color: white;        
+        filter: blur(10px);
+    }
+    .profileRow.mail{
+        font-size:80%;
+    }
+
+
+@media (min-width:1000px){ /*for tablet*/
+    body {
+        background-image: none;
+        background-color:silver;
+    }
+    body > .wrapper{
+        background: url('../images/backgrounds/desktopOpacityBG.jpg') no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+
+        /*padding: 3vh 3vw;*/
+        width: 35vw;
+        height: 100vh;        
+    }
+
+    footer.secondary {        
+        margin: 0 -3.5vw;
+    }
+    footer.secondary svg {
+        margin-right: 2vw;
+    }
+
+
+    /*pageLogin*/   
+        #pageLogin{
+            background-image: none;                        
+        }
+        #pageLogin .wrapper{
+            background-image: url('../images/backgrounds/desktopBG.jpg')
+        }       
     
 }
