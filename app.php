@@ -16,22 +16,35 @@
     
     <link rel="stylesheet" href="includes/style.css" />
     <script src="includes/script.js"></script>
-   
+       
 </head>
 <body>
-    <div class="wrapper">
-        <div class="page" data-page="mainLists">
-            <header>
+<?php 
+    //$id = date("dmYHis");    
+?>
+    <div>
+         <div class="page" data-page="mainLists" data-ajax="server/get/getLists.php">
+            <header class="container-fluid">
                 <div class="row">
                     <div class="col-2"></div>
                     <div class="col-8 text-center">רשימות קניות</div>
-                    <div class="col-2 text-left">
-                        <span class="switchPage" data-target="addMainList"><i class="fas fa-plus-circle"></i></span>
+                    <div class="col-2 text-left">                        
+                        <span class="toggleMenu">
+                            <i class="fas fa-bars"></i>
+                            <span class="badge">3</span>
+                        </span>
                     </div>
                 </div>            
             </header>
         
-            <main>
+            <main class="container">
+                <header class="row container-fluid">
+                    <div class="col-12 text-center">
+                        <button class="btn btn-lg switchPage" data-target="addMainList" id="newList">
+                            רשימה חדשה <i class="fas fa-plus-circle"></i>
+                        </button>
+                    </div>
+                </header>                                
                 <div class="container" id="mainLists">   
                     <form id="formShowListItems" method="get" action="mainListItems.php">
                         <input type="hidden" name="listID" />
@@ -42,7 +55,7 @@
 
                     <div class='row main-list'>              
                         <div class='col-6 text-right'>תומר</div>
-                        <div class='col-4'>4 מוצרים</div>
+                        <div class='col-4'><span class='quantity'>4</span> מוצרים</div>
                         <div class='col-2 text-left'><span class='fas fa-angle-left'></span></div>
                     </div>
                     -->                
@@ -51,14 +64,17 @@
         </div>
         
         <div class="page" data-page="addMainList">
-            <header>
+            <header class="container-fluid">
                 <div class="row">
-                    <div class="col-2">
+                    <div class="col-2 text-right">
                         <span class="switchPage" data-target="mainLists">
                             <i class="far fa-arrow-alt-circle-right"></i>
                         </span>
                     </div>
                     <div class="col-8 text-center">רשימה חדשה</div>
+                    <div class="col-2 text-left">
+                        <span class="toggleMenu"><i class="fas fa-bars"></i></span>
+                    </div>
                 </div>
             </header>
             <main>
@@ -66,7 +82,7 @@
                     <form action="addMainList.php" id="formAddMainList" method="post">
                         <div class="form-group text-right">
                             <label for="txtAddMainListName">שם הרשימה:</label>
-                            <input type="text" class="form-control" id="txtAddMainListName" placeholder="לדוגמא: הבית של פיסטוק" required />
+                            <input type="text" class="form-control" name="txtAddMainListName" placeholder="לדוגמא: הבית של פיסטוק" required />
                         </div>
                         <div class="form-group row text-right rowShareMemeber">
                             <label class="col-8" for="txtMainListShare[]">שיתוף:</label>
@@ -89,28 +105,41 @@
         </div>
 
         <div class="page" data-page="mainListItems">
-            <header>
+            <header class="container-fluid">
                 <div class="row">
-                    <div class="col-2">
+                    <div class="col-2 text-right">
                         <span class="switchPage" data-target="mainLists">
                             <i class="far fa-arrow-alt-circle-right"></i>
                         </span>
                     </div>
                     <div class="col-8 text-center" id="mainListName">שם הרשימה</div>
-                    <div class="col-2 text-left">
-                        <span class="switchPage" data-target="addManualItem">
-                            <i id="addManuallItem" class="fas fa-plus-circle"></i>
-                        </span>                                                
+                    <div class="col-2 text-left">                        
+                        <span class="toggleMenu"><i class="fas fa-bars"></i></span>
                     </div>
                 </div>
             </header>
             <main>
+                <header class="container">
+                    <div class="row">
+                        <div class="col-6 text-right">
+                            <button class="btn btn-md switchPage" data-target="addManualItem">
+                                פריט חדש <i class="fas fa-plus-circle"></i>
+                            </button>
+                        </div>
+                        <div class="col-6 text-left">
+                            <button class="btn btn-md switchPage" data-target="addToCartConfirmation">
+                               שלח online <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>                    
+                    </div>                    
+                </header>                
                 <div class="container">
                     <ul class="ul-main-list">
                         <!--will be loadded from DB eventually. for now just from a js json -->                        
                     </ul>
                 </div>                
             </main>
+            <!--
             <footer class="secondary">                
                 <span class="listOptions" data-option="addToCart">
                     <i class="fas fa-shopping-cart"></i>
@@ -122,17 +151,21 @@
                     <i class="fas fa-list-ul"></i>
                 </span>                                    
             </footer>
+            -->
         </div>
 
         <div class="page" data-page="addManualItem">
-            <header>
+            <header class="container-fluid">
                 <div class="row">
-                    <div class="col-2">
+                    <div class="col-2 text-right">
                         <span class="switchPage" data-target="mainListItems">
                             <i class="far fa-arrow-alt-circle-right"></i>
                         </span>
                     </div>
                     <div class="col-8 text-center">הוספת פריט ידנית</div>
+                    <div class="col-2 text-left">
+                        <span class="toggleMenu"><i class="fas fa-bars"></i></span>
+                    </div>
                 </div>
             </header>
             <main>
@@ -160,7 +193,7 @@
             </main>
         </div>
         <div class="page" data-page="addToCartConfirmation">
-            <header>
+            <header class="container-fluid">
                 <div class="row">
                     <div class="col-2">
                         <span class="switchPage" data-target="mainListItems">
@@ -168,6 +201,9 @@
                         </span>
                     </div>
                     <div class="col-8 text-center">הזמנת משלוח</div>
+                    <div class="col-2 text-left">
+                        <span class="toggleMenu"><i class="fas fa-bars"></i></span>
+                    </div>
                 </div>
             </header>
             <main>
@@ -182,58 +218,64 @@
         </div>
 
         <div class="page" data-page="profile" data-effect="blind">
-            <header>
+            <header class="container-fluid">
                 <div class="row">
-                    <div class="col-2">
+                    <div class="col-2 text-right">
                         <span class="goBack">
                             <i class="far fa-arrow-alt-circle-right"></i>
                         </span>
                     </div>
                     <div class="col-8 text-center">הפרופיל שלי</div>
-                    <div class="col-2 text-left"><i class="fas fa-user-circle"></i></div>
+                    <div class="col-2 text-left"><i class="fas fa-user-circle"></i></div>                    
                 </div>
             </header>
             <main>
-                <div class="container" style="text-align:center;">   
+                <div class="container-fluid">   
                     <div class="imgProfile">
                         <img src="images/misc/profilePic.png"/>
-                    </div>                        
-                    <div class="row profileRow">
-                        <div class="overlay"></div>
                         <div class="col-12 text-center">
                             מספר מזהה: 202212
                         </div>
-                    </div>
-                    <div class="row profileRow">
-                        <div class="overlay"></div>
+                    </div>                        
+                    
+                    <div class="row profileRow">                        
                         <div class="col-12 text-center">
-                            עדיאל פרץ
+                            <i class="fas fa-shopping-cart"></i>
+                            ההזמנות שלי
                         </div>
                     </div>                    
-                    <div class="row profileRow mail">
-                        <div class="overlay"></div>
+                    <div class="row profileRow">                        
                         <div class="col-12 text-center">
-                            adiel_perez@gmail.com
+                            <i class="fas fa-comment"></i>
+                            התראות <span class="notification-counter"></span>
                         </div>
                     </div>                    
                     <div class="row profileRow">                                                
                         <div class="col-12 text-center">                            
-                            <i class="fas fa-cart-plus"></i> ההזמנות שלי                            
+                            <i class="fas fa-envelope"></i>
+                            כתבו לנו
                         </div>
-                    </div>                    
+                    </div>                          
+                    <div class="row profileRow">
+                        <div class="col-12 text-center">
+                            <i class="fas fa-power-off"></i>    
+                            התנתקות
+                        </div>
+                    </div>                          
                 </div>
             </main>
         </div>
-
-        <footer class="main">
-            <div class="overlay"></div>
-            <div class="container">
-                <div class="switchPage" data-target="profile">
-                    <div class="row">
-                        <div class="col-2"></div>
-                        <div class="col-8 text-center">Adiel Perez</div>
-                        <div class="col-2"><i class="fas fa-user-circle"></i></div>
-                    </div>
+        <footer class="footer fixed-bottom main">                        
+            <div class="switchPage" data-target="profile">
+                <div class="row container-fluid content" id="profileRow">                   
+                    <div class="col-2 text-left"><i class="fas fa-user-circle fa-lg"></i></div>
+                    <div class="col-8 text-center">Adiel Perez</div>                        
+                    <div class="col-2 text-right"><i class="fas fa-circle fa-sm"></i></div>
+                </div>            
+                <div class="row container-fluid" id="logoRow">
+                    <div class="container text-center">
+                        <a href="#" id="logoMenu"></a>
+                    </div>                    
                 </div>
             </div>
         </footer>

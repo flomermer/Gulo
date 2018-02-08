@@ -1,7 +1,11 @@
 {
   "ExpandedNodes": [
     "",
-    "\\includes"
+    "\\includes",
+    "\\server",
+    "\\server\\createDB",
+    "\\server\\get",
+    "\\server\\set"
   ],
   "SelectedNode": "\\includes\\script.js",
   "PreviewInSolutionExplorer": false

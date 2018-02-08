@@ -15,223 +15,159 @@ header, nav, main, section, article, footer, aside {
 body {
     direction: rtl;
     font-family: 'Alef', sans-serif;    
-    font-size: 2em;
+    font-size:1.6em;
 }
-body > .wrapper{
-    background: url('../images/backgrounds/desktopOpacityBG.jpg') no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-    margin:auto;    
-    width: 100vw;
-    height: 100vh;    
-    padding: 3vh 5vw;
-    position:relative;
-}
-
-header{
-    height: 8vh;
-    line-height: 8vh;
-    font-size: 90%;
-}
-main{
-    height: 78vh;      
-    overflow: scroll;
-    position:relative;
-}
-
-footer.main{    
-    position: fixed;
-    bottom: 0;    
-    width: inherit;
-    height: 8vh;    
-    line-height:8vh;  
-    margin: 0 -5vw;
-    text-align: center;    
-}
-footer.main > .overlay{        
-    position: absolute;
-    height: inherit;
-    width: 100%;
-    background-color: white;
-    filter: blur(10px);
-}
-footer.secondary {
-    position: sticky;
-    bottom: 8vh;        
-    height: 8vh;
-    line-height: 8vh;
-    margin: 0 0vw;        
+footer.main {
+    background: #e6e1e1;
     direction:ltr;
 }
-footer.secondary svg {
-    margin-right: 4vw;
+footer.main .content div:last-child svg{
+    color:#81e021;    
+}
+button {    
+    background: #e6e1e1; 
+}
+svg.fa-plus-circle { 
+    color: #599e39;
+}
+.page > header {
+    background: #e6e1e1;
+    margin-bottom: 2vh;
 }
 
-
-::-webkit-scrollbar { /*hide scrollbar*/
-    display: none;
+.toggleMenu{
+    padding-top:20px;
+    position:relative;
+}
+.toggleMenu .badge{
+    position:absolute;
+    right: -10px;
+    top: 20px;
+    background:red;
+    color:white;
+    font-size:0.5em;
 }
 
-a {
-    color: inherit;
-    text-decoration:none;
+#logoRow{display:none;}
+#logoMenu {    
+    display: block;
+    margin: 0 auto;
+    margin-bottom:20px;
+    margin-top:20px;
+    width: 100px;
+    height: 54px;
+    background: url('../images/logo/smallLogo.png');
 }
-a:active{
-    text-decoration:none;
-}
-form button[type='submit'] {
-    background: white;
-    margin-top:10vh;
-}
-form label{
-    font-size:70%;
+.highlightBorder{
+    border:2px dashed red;
 }
 
-/*pageLogin*/
-    #pageLogin > .wrapper{        
-        background-image: url('../images/backgrounds/mobileBG.jpg');
+/*login page*/
+    #pageLogin{
+        direction:ltr;
+    }
+    #pageLogin header{
+        margin-top: 3vh;
     }
     #pageLogin header #logo {
         display: block;    
         margin:0 auto;
         width: 240px;
         height: 130px;
-        background: url('../images/logo/barcodeLogo2.png');
-        margin-top: 7vh;
+        background: url('../images/logo/barcodeLogo2.png');    
     }
-    #pageLogin main{
-        margin-top:20vh;
-        margin-right: 15%;
-    }
-    #pageLogin main section{
-        font-size: 130%;
-        margin-bottom: 6vh;  
-        padding-right:20%;    
-        background-position: right;    
-        background-repeat: no-repeat;    
-        text-shadow:1px 1px 6px white;
-    }
-    #pageLogin main section:nth-child(1){background-image: url('../images/icons/login/facebook.png');}
-    #pageLogin main section:nth-child(2){background-image: url('../images/icons/login/google.png');}
-    #pageLogin main section:nth-child(3){background-image: url('../images/icons/login/mail.png');}
 
-/*pageMainLists*/    
-    .page[data-page=mainLists] main{
-        margin-top: 3vh;
+/*mainLists*/    
+    .page[data-page=mainLists] #mainLists {    
+        margin-top: 3vh;        
+        cursor: pointer;    
     }
     .page[data-page=mainLists] .main-list {
-        font-size:80%;
-        margin-bottom: 3vh;
-        height: 8vh;
-        line-height: 8vh;
-        
-        background-color:white;    
-        cursor: pointer;
-        opacity: 0.7;
-        border-radius:10px;
+        margin-bottom: 4vh;
+        height: 5vh;
+        line-height: 5vh;
+        background: #f6f4f6;
+        border-radius:5px;
+        font-size:0.8em;
     }
-    .page[data-page=mainLists] .main-list div:nth-child(2){
-        font-size: 70%;    
-    }
-
-/*addMainList page*/
-    .page[data-page=addMainList] main{
-        margin-top:2vh;
-    }
-    .page[data-page=addMainList] button[type='submit'] {                
+    .page[data-page=mainLists] .main-list div:nth-child(2) {
         font-size: 70%;
     }
 
+/*addMainList page*/
+    .page[data-page=addMainList] main {
+        margin-top: 7vh;
+    }
+    .page[data-page=addMainList] button[type='submit'] {
+        font-size: 70%;
+        margin-top:7vh;    
+    }
 /*mainListItems*/
     .page[data-page='mainListItems'] .ul-main-list {
         margin-top: 3vh;
+        list-style: none;        
+        text-align: right;
+        margin-bottom:3vh;
+    }
+    .page[data-page='mainListItems'] .ul-main-list > li {
+        font-size:0.7em;
+        font-weight:bold;        
+    }
+    .page[data-page='mainListItems'] .ul-main-list li .fa-plus {
+        cursor: pointer;
+        font-size: 70%;
+        margin-left: 1%;
+    }
+    .page[data-page='mainListItems'] .ul-main-list > li > ul {        
         list-style: none;
-        font-size: 4vh;
-        text-align: right;                
+        font-size: 0.9em;
+        font-weight: normal;        
     }
-    .page[data-page='mainListItems'] .ul-main-list > li{
-        margin-bottom: 5vh;
+    .page[data-page='mainListItems'] .ul-main-list > li > ul > li {
+        border-bottom:1px solid silver;
     }
-    .page[data-page='mainListItems'] .ul-main-list li .fa-plus{    
-        cursor:pointer;
-        margin-left: 4%;
-    }
-    .page[data-page='mainListItems'] .ul-main-list > li > ul{
-        list-style: none;
-        font-size: 3vh;
-    }        
-    .item-checked{
+    .item-checked {
         text-decoration: line-through;
-    }    
-
-/*addToCartConfirmation*/
-    .page[data-page='addToCartConfirmation'] main{
-        margin-top:15vh;
-        font-size:70%;
-        text-align:center;
     }
+
+/*addManualItem page*/
+.page[data-page='addManualItem'] main {
+    margin-top: 7vh;
+}
+
+.page[data-page='addManualItem'] button[type='submit'] {
+    font-size: 70%;
+    margin-top: 7vh;
+}
+
 
 /*profile*/
-    .page[data-page='profile'] main{
-        text-align:center;        
-    }    
-    .imgProfile{
-        margin-bottom:5vh;
+    .page[data-page='profile'] .imgProfile {
+        font-size:0.6em;
+        font-weight:bold;
     }
-    .imgProfile img{
+    .page[data-page='profile'] .imgProfile img {
         width:100px;
         height:100px;        
     }
-    .profileRow{
-        height:10vh;
-        line-height:10vh;
-        margin-bottom: 4vh;
-    }
-    .profileRow .overlay{
-        position: absolute;
-        height: inherit;
-        width: 100%;
-        background-color: white;        
-        filter: blur(10px);
-    }
-    .profileRow.mail{
-        font-size:80%;
-    }
 
-
-@media (min-width:1000px){ /*for tablet*/
-    body {
-        background-image: none;
-        background-color:silver;
+    .page[data-page='profile'] main .container-fluid{
+        text-align:center;                        
     }
-    body > .wrapper{
-        background: url('../images/backgrounds/desktopOpacityBG.jpg') no-repeat center center fixed;
-        -webkit-background-size: cover;
-        -moz-background-size: cover;
-        -o-background-size: cover;
-        background-size: cover;
-
-        /*padding: 3vh 3vw;*/
-        width: 35vw;
-        height: 100vh;        
+    .page[data-page='profile'] main .profileRow:nth-child(2){
+        margin-top:5vh;
     }
-
-    footer.secondary {        
-        margin: 0 -3.5vw;
+    .page[data-page='profile'] main .profileRow{
+        font-size:1.3em;
+        background: #f6f4f6;
+        margin-bottom:30px;
+        
+        position:relative;
     }
-    footer.secondary svg {
-        margin-right: 2vw;
+    .profileRow svg{
+        position:absolute;
+        right:30px;
+        top:10px;
     }
-
-
-    /*pageLogin*/   
-        #pageLogin{
-            background-image: none;                        
-        }
-        #pageLogin .wrapper{
-            background-image: url('../images/backgrounds/desktopBG.jpg')
-        }       
     
-}
+    

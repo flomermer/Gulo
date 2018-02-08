@@ -1,4 +1,11 @@
-﻿function switchPage(page) {
+﻿jQuery.fn.exists = function () { return this.length > 0; }
+jQuery.fn.filterByData = function (field, val) {
+    return $(this).filter(function () {
+        return ($(this).data("key")[field] == val)
+    });
+}
+
+function switchPage(page) {
     var targetPage;
     if ($.type(page) == 'string')
         targetPage = page;
@@ -16,28 +23,44 @@
     if (effect === undefined)
         effect = 'fade';
 
+    navigation(targetPage);
     $(".page:visible").hide();
-    
-    $(".page[data-page='" + targetPage + "']").show(effect,'',500);
+    $(".page[data-page='" + targetPage + "']").show(effect, '', 500);       
 }    
 function goBack() {
     switchPage(lastPage);
 }
+function navigation(page) {
+    if (page == 'profile') {
+        $("#logoRow").show();
+        $("#profileRow").hide();        
+    } else {
+        $("#logoRow").hide();
+        $("#profileRow").show();        
+    }
+}
 
 /*mainLists*/
-    function createMainListItem(mainListObj) {
+    function renderMainListItem(mainListObj) {
         var $mainListItem = $("<div class='row main-list'></div>");
         $mainListItem.data('key', mainListObj);
         $mainListItem.append("<div class='col-6 text-right'>" + mainListObj.listName + "</div>");
-        $mainListItem.append("<div class='col-4'>" + mainListObj.quantity + " מוצרים</div>");
+        $mainListItem.append("<div class='col-4'><span class='quantity'>" + mainListObj.quantity + "</span> מוצרים</div>");
         $mainListItem.append("<div class='col-2 text-left'><span class='fas fa-angle-left'></span></div>");
         $("#mainLists").append($mainListItem);
-        console.log(mainListObj);
+        console.log(mainListObj);        
     }
 
-    function loadMainListsFromDB(data) {        
-        $.map(data.mainLists, function (mainList) {
-            createMainListItem(mainList);
+    function loadMainListsFromDB() {
+        $("#mainLists").empty();
+        $.ajax({
+            url: "server/get/getLists.php?user_id=" + USER_ID,
+            success: function (json) {
+                console.log(json);
+                $.map(json, function (list) {
+                    renderMainListItem(list);
+                })        
+            }
         })        
     }
     
@@ -45,8 +68,8 @@ function goBack() {
 /*addMainList*/
     function newList_addShareMember() {                        
         var $newMemberRow = $("<div class='form-group row text-right rowNewMember'></div>");                
-        $newMemberRow.append('<div class="col-10"><input type="text" class="form-control" name="txtAddMainListMember" placeholder="מספר מזהה"></div>');                
-        $newMemberRow.append('<div class="col-2"><span class="btnNewListShareMinus"><i class="fas fa-minus"></i></span></div>');
+        $newMemberRow.append('<div class="col-6 col-md-2"><input type="number" class="form-control" name="txtAddMainListMember[]" placeholder="מספר מזהה" min="1"></div>');                
+        $newMemberRow.append('<div class="col-2 col-md-1"><span class="btnNewListShareMinus"><i class="fas fa-minus"></i></span></div>');
 
         $(".rowShareMemeber").after($newMemberRow);        
     }
@@ -56,29 +79,50 @@ function goBack() {
     }
     function mainListClick() {
         var list = $(this).data('key');
-
-        /*
-            1. ajax request to get list items from db
-            2. load response into mainListItems container
-        */
-        $("#mainListName").text(list.listName);
-        renderListItems(listItemsDataExample());
-        switchPage("mainListItems");        
+        
+        $.ajax({
+            url: "server/get/getListProducts.php?list_id=" + list.listID,
+            success: function (json) {
+                console.log(json);
+                $("#mainListName").text(list.listName).data("key",list);
+                renderListItems(json);
+                switchPage("mainListItems");        
+            }
+        })               
     }
     function addMainList(event) {
         event.preventDefault();
+        var listName = $("input[name='txtAddMainListName']").val();
+        var formData = $("#formAddMainList").serialize() + "&user_id=" + USER_ID;
 
-        /*ajax call to set new data will return newID*/
-        var newID = 100; //newID will be the response from the ajax call
-        createMainListItem({
-            listID: 30,
-            listName: $("#txtAddMainListName").val(),
-            quantity: 0
-        })
+        $(".highlightBorder").removeClass("highlightBorder");
+        $.ajax({
+            type: "GET",
+            url: "server/set/insertList.php",
+            data: formData,
+            success: function (newID) {                
+                if (~newID.indexOf("error")) {
+                    alert(newID);
+                    alert("אירעה שגיאה. בדוק חיבור לרשת ונסה שנית");
+                    return false;
+                } else if (~newID.indexOf("notExists")) {
+                    var badID = newID.split(":")[1];
+                    $("input[name='txtAddMainListMember[]']").filter(function () {
+                        return ($(this).val() == badID)
+                    }).addClass("highlightBorder");
+                    return false;
+                }                
+                renderMainListItem({
+                    listID: newID,
+                    listName: listName,
+                    quantity: 0
+                })
 
-        $("#formAddMainList").trigger("reset");
-        $(".rowNewMember").remove();
-        switchPage("mainLists");
+                $("#formAddMainList").trigger("reset");
+                $(".rowNewMember").remove();
+                switchPage("mainLists");
+            }
+        })                
     }
 
 /*mainListItems*/
@@ -94,7 +138,7 @@ function goBack() {
         var $subList = $("<li></li>");
         var $collapseTitle = $('<span data-toggle="collapse" data-target="ul[data-cat=' + subList.subListID + ']"></span>');
         $collapseTitle.append('<i class="fas fa-plus fa-1x"></i> ' + subList.subListName + ' (<span class="subListQuantity" data-cat=' + subList.subListID +'>' + subList.items.length + '</span>)');
-        var $subUL = $('<ul class="ul-main-list-category collapse" data-cat="' + subList.subListID + '"></ul>');
+        var $subUL = $('<ul class="collapse show ul-main-list-category" data-cat="' + subList.subListID + '"></ul>');
 
         $.map(subList.items, function (item) {        
             renderItemLI($subUL,item)            
@@ -102,7 +146,7 @@ function goBack() {
 
         $subList.append($collapseTitle).append($subUL);
         $(".page[data-page='mainListItems'] .ul-main-list").append($subList);
-
+        
         /*subList li html example:
             <li>
                 <span data-toggle="collapse" data-target="ul[data-cat='2']">
@@ -116,15 +160,19 @@ function goBack() {
             </li>
         */
     }
-    function renderItemLI(ul, item) {
+    function renderItemLI($ul, item) {        
         var quantity = '';
-        if (item.quantity !== undefined && item.quantity!='1')
-            quantity = item.quantity + ' '
+        
+        if (item.quantity !== undefined && item.quantity != '1' && item.quantity!=1)
+            quantity = ' <B>('+item.quantity + ')</B>'
 
-        var $newLI = $('<li class="item" data-id="' + item.id + '">' + quantity + item.name + '</li>');
+        var $newLI = $('<li class="item" data-id="' + item.id + '">' + item.name + quantity + '</li>');
         $newLI.data('key', item);
 
-        ul.append($newLI);
+        if (item.isChecked==1)
+            $newLI.addClass("item-checked");
+
+        $ul.append($newLI);
         increaseSublistQuantity(item.category);
     }
     function decreaseSublistQuantity(cat) {
@@ -135,6 +183,19 @@ function goBack() {
         var newSubListQuantity = parseInt($(".subListQuantity[data-cat=" + cat + "]").text()) + 1;
         $(".subListQuantity[data-cat=" + cat + "]").text(newSubListQuantity);
     }
+    function increaseMainListQuantity(listID) {
+        var $mainList = $(".main-list").filterByData('listID', listID);
+        var newQuantity = $mainList.data("key").quantity + 1;
+        $mainList.data("key").quantity = newQuantity;
+        $mainList.find(".quantity").html(newQuantity);
+    }
+    function decreaseMainListQuantity(listID) {
+        var $mainList = $(".main-list").filterByData('listID', listID);
+        var newQuantity = $mainList.data("key").quantity - 1;
+        $mainList.data("key").quantity = newQuantity;
+        $mainList.find(".quantity").html(newQuantity);
+    }
+    
     
 
     function toggleListView() {        
@@ -160,56 +221,81 @@ function goBack() {
                 str += "%0A"; // <BR> in whatsapp api
         })                
         window.location.href = "whatsapp://send?text=" + str;        
-    } 
-    function addListToCart() {
-        switchPage("addToCartConfirmation");
-    }
+    }     
     function checkItem() {
-        var item = $(this).data('key');
-        
-        $(this).toggleClass("item-checked");
+        var $el = $(this);
+        var item = $(this).data('key');        
+        var category = $(this).parent().attr("data-cat");
+        var list = $("#mainListName").data("key");
+        var isChecked;
 
-        if ($(this).hasClass("item-checked"))
-            decreaseSublistQuantity(item.category);
-        else
-            increaseSublistQuantity(item.category);
+        if ($(this).hasClass("item-checked")) 
+            isChecked = 0;
+        else 
+            isChecked = 1;
+        
+        $.ajax({
+            type: "GET",
+            data: { item_id: item.id, category: category, isChecked: isChecked },
+            url: "server/set/checkItem.php",
+            success: function (data) {                
+                $el.toggleClass("item-checked");        
+                if (isChecked) {
+                    decreaseSublistQuantity(item.category);
+                    decreaseMainListQuantity(list.listID);
+                } else {
+                    increaseSublistQuantity(item.category);
+                    increaseMainListQuantity(list.listID);
+                }
+            }
+        })        
     }    
 
 /*manuallyAddItem*/
     function addManualItem(event) {
         event.preventDefault();
 
+        var list = $("#mainListName").data("key");
+
         var itemName = $("#txtAddListItemName").val();
         var itemQuantity = $("#txtAddListItemQuantity").val();
+
+        var formData = $("#formAddManualItem").serialize() + "&list_id=" + list.listID;
         
-        /*
-            ajax request to set new item
-            response will get newItem {id,category,name}
-        */
+        $.ajax({
+            type: "post",
+            data: formData,
+            url: "server/set/insertManualItem.php",            
+            success: function (newItem) {
+                var $theUL = $(".ul-main-list-category[data-cat=" + newItem.category + "]");
+                if (!$theUL.exists()) { //IF UL NOT EXISTS
+                    var subList = {
+                        subListID: '-1',
+                        subListName: 'הוספה ידנית',
+                        items: []
+                    }
+                    subList['items'].push(newItem);
+                    renderSubList(subList);                    
+                } else {
+                    renderItemLI($theUL, newItem);
+                }                
+                increaseMainListQuantity(list.listID);
+                switchPage("mainListItems");
 
-        var newItem = {
-            id: '100',
-            category: '1',
-            name: itemName,
-            quantity: itemQuantity
-        }
-
-        /*for now, we'll add it to dom manually. later, it will set the state of the data and then reRender*/
-        var $theUL = $(".ul-main-list-category[data-cat=" + newItem.category + "]");
-        renderItemLI($theUL, newItem);        
-        switchPage("mainListItems");
-
-        $("#formAddManualItem").trigger("reset");
+                $("#formAddManualItem").trigger("reset");
+            }
+        })                        
     }
     
 $("document").ready(function () {
-    lastPage = '';
+    USER_ID = 1;
+    lastPage = '';     
 
     $(".goBack").click(goBack);
-    $(".switchPage").click(switchPage);    
-
+    $(".switchPage").click(switchPage);
+    $(".toggleMenu").click(function () { switchPage("profile"); });
     /*initial functions*/
-    loadMainListsFromDB(mainListsDataExample());    
+    loadMainListsFromDB();    
 
     /*mainLists*/
         $(".page[data-page='mainLists']").on("click", ".main-list", mainListClick);        
@@ -220,22 +306,18 @@ $("document").ready(function () {
         $(".page[data-page='addMainList'] #formAddMainList").on("click", ".btnNewListShareMinus", newList_removeShareMember);        
         $(".page[data-page='addMainList'] #formAddMainList").submit(addMainList);
 
-    /*mainListItems*/
-        $(".page[data-page='mainListItems'] .listOptions[data-option='toggleListView']").click(toggleListView);
-        $(".page[data-page='mainListItems'] .listOptions[data-option='shareList']").click(shareList);
-        $(".page[data-page='mainListItems'] .listOptions[data-option='addToCart']").click(addListToCart);
+    /*mainListItems*/        
         $(".page[data-page='mainListItems']").on("click", ".item", checkItem);        
 
     /*manuallyAddItem*/
-        $(".page[data-page='addManualItem'] #formAddManualItem").submit(addManualItem);
+        $(".page[data-page='addManualItem'] #formAddManualItem").submit(addManualItem);    
+    
 })
 
 
 /*JSONS DATA FOR EXAMPLE*/
     function listItemsDataExample() {
-        return {
-            mainListID: '1',
-            listName: 'עדיאל בית',
+        return {            
             subLists: [
                 {
                     subListID: '1',
@@ -281,6 +363,26 @@ $("document").ready(function () {
                             id: '7',
                             name: 'נייר טואלט - האגיס',
                             category: '2'
+                        },
+                        {
+                            id: '4',
+                            name: 'שמפו - פינוק - לשיער רגיל',
+                            category: '2'
+                        },
+                        {
+                            id: '5',
+                            name: 'מרכך שיער - פינוק',
+                            category: '2'
+                        },
+                        {
+                            id: '6',
+                            name: 'סבון גוף - dove',
+                            category: '2'
+                        },
+                        {
+                            id: '7',
+                            name: 'נייר טואלט - האגיס',
+                            category: '2'
                         }
                     ]
                 },
@@ -288,6 +390,33 @@ $("document").ready(function () {
                     subListID: '3',
                     subListName: 'ציוד משרדי',
                     items: [
+                        {
+                            id: '8',
+                            name: 'עט ירוק',
+                            quantity: '5',
+                            category: '3'
+                        },
+                        {
+                            id: '9',
+                            name: 'עט כחול',
+                            quantity: 2,
+                            category: '3'
+                        },
+                        {
+                            id: '10',
+                            name: 'מהדק',
+                            category: '3'
+                        },
+                        {
+                            id: '11',
+                            name: 'מספריים',
+                            category: '3'
+                        },
+                        {
+                            id: '12',
+                            name: 'מחדד',
+                            category: '3'
+                        },
                         {
                             id: '8',
                             name: 'עט ירוק',

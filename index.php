@@ -10,14 +10,20 @@
     <link rel="stylesheet" href="includes/style.css" />    
 </head>
 <body id="pageLogin">
-    <div class="wrapper">
+    <div class="container">
         <header class="col-12 text-center">
-            <a href="app.html" id="logo"></a>    
+            <a href="app.php" id="logo"></a>    
         </header>          
-        <main class="text-right">
-            <section>Facebook</section>
-            <section>Google+</section>
-            <section>Mail</section>
+        <main class="container">
+            <div class="row text-center">
+                <div class="col-12">Facebook</div>
+            </div>
+            <div class="row text-center">
+                <div class="col-12">Google+</div>
+            </div>
+            <div class="row text-center">
+                <div class="col-12">Mail</div>
+            </div>            
         </main>
     </div>    
 </body>
