@@ -1,11 +1,10 @@
+<?php include('../dbDetails.php'); ?>
 <?php
 $item_id    =  $_GET["item_id"];
 $category   = $_GET["category"];
 $isChecked  = $_GET["isChecked"];
 
-//$conn = new mysqli("182.50.133.55","auxstudDB7c","auxstud7cDB1!","auxstudDB7c");
-$conn = new mysqli("localhost","mysql_montv","dinoflom","projectDB");
-
+$conn = new mysqli($conn_ip,$conn_username,$conn_password,$db_name);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }

@@ -1,11 +1,10 @@
+<?php include('../dbDetails.php'); ?>
 <?php
 header('Content-Type: application/json');
 
 $list_id = $_GET["list_id"];
 
-//$conn = new mysqli("182.50.133.55","auxstudDB7c","auxstud7cDB1!","auxstudDB7c");
-$conn = new mysqli("localhost","mysql_montv","dinoflom","projectDB");
-
+$conn = new mysqli($conn_ip,$conn_username,$conn_password,$db_name);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
@@ -38,7 +37,7 @@ if ($result->num_rows > 0) {
         $products = explode('***',$rs['productsStr']);
         foreach($products as $product){
             $data = explode('@@@',$product);
-            $items[] = array(                
+            $items[] = array(
                 'id' => $data[0],
                 'name'  => $data[1],
                 'quantity' => $data[2],
@@ -65,7 +64,8 @@ if ($result->num_rows > 0) {
             'id'        => $rs['id'],
             'name'      => $rs['product_name'],
             'quantity'  => $rs['quantity'],
-            'isChecked' => $rs['isChecked']
+            'isChecked' => $rs['isChecked'],
+            'isWaiting' => $rs['isWaiting']
         );
     }
     $json->subLists[] = array(

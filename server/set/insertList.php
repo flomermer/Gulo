@@ -1,15 +1,15 @@
+<?php include('../dbDetails.php'); ?>
 <?php
 $user_id = $_GET["user_id"];
 $list_name = $_GET["txtAddMainListName"];
 $share_lists = $_GET["txtAddMainListMember"];
 
-//$conn = new mysqli("182.50.133.55","auxstudDB7c","auxstud7cDB1!","auxstudDB7c");
-$conn = new mysqli("localhost","mysql_montv","dinoflom","projectDB");
-
+$conn = new mysqli($conn_ip,$conn_username,$conn_password,$db_name);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+$conn->query("SET NAMES 'utf8'");
 
 foreach($share_lists as $shareID){
     $result = $conn->query("SELECT user_id FROM 238_users WHERE user_id=$shareID");

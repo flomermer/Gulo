@@ -1,12 +1,17 @@
 {
   "ExpandedNodes": [
     "",
+    "\\admin",
+    "\\admin\\includes",
+    "\\admin\\includes\\bootstrap",
+    "\\admin\\includes\\bootstrap\\3.3.5",
+    "\\admin\\includes\\bootstrap\\3.3.5\\css",
+    "\\admin\\server",
+    "\\admin\\server\\get",
+    "\\images\\logo",
     "\\includes",
-    "\\server",
-    "\\server\\createDB",
-    "\\server\\get",
-    "\\server\\set"
+    "\\server\\get"
   ],
-  "SelectedNode": "\\includes\\script.js",
+  "SelectedNode": "\\admin\\inventory.php",
   "PreviewInSolutionExplorer": false
 }

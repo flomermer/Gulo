@@ -8,9 +8,10 @@
 header, nav, main, section, article, footer, aside {
     display: block;    
 }
+a{text-decoration:none;}
+a:active{text-decoration:none;}
 
 .page{display:none;}
-.page:nth-child(1){display:block;}
 
 body {
     direction: rtl;
@@ -30,6 +31,10 @@ button {
 svg.fa-plus-circle { 
     color: #599e39;
 }
+.alert{
+    font-size:0.6em;
+    display:none;
+}
 .page > header {
     background: #e6e1e1;
     margin-bottom: 2vh;
@@ -40,6 +45,7 @@ svg.fa-plus-circle {
     position:relative;
 }
 .toggleMenu .badge{
+    display:none;
     position:absolute;
     right: -10px;
     top: 20px;
@@ -52,29 +58,81 @@ svg.fa-plus-circle {
 #logoMenu {    
     display: block;
     margin: 0 auto;
-    margin-bottom:20px;
-    margin-top:20px;
-    width: 100px;
-    height: 54px;
+    margin-bottom:10px;
+    margin-top:10px;
+    width: 80px;
+    height: 44px;
     background: url('../images/logo/smallLogo.png');
 }
 .highlightBorder{
     border:2px dashed red;
 }
+.gulo {
+    font-size: 3.5em;
+    font-weight: bolder;
+    color: #96c9ed;
+    text-shadow: -2px -1px 5px #000, 1px -1px 2px #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
 
-/*login page*/
-    #pageLogin{
+.thinkSmarter {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: black;
+    text-shadow: 2px -1px silver;
+}
+
+/*loginPage*/
+    .page[data-page=login]{
+        display:block;
+        direction:ltr;        
+    }
+    .page[data-page=login] header {
+        text-align: center;
+        background: none;
+        margin-top: 6vh;
+    }    
+    .page[data-page=login] main {
+        margin: 0 auto;
+    }   
+    .page[data-page=login] main .row{
+        margin-top:8vh;
+        font-size:1.5em;        
+    }
+    .page[data-page=login] main .row a{
+        color: #7bbbe8;
+        text-decoration:none;
+    }
+    .page[data-page=login] .fa-facebook{
+        color:#4267b2;
+    }
+    .page[data-page=login] .fa-google{
+        /*margin-left:-20px;*/
+        color: #f53e28;
+    }
+    .page[data-page=login] .fa-envelope{        
+        margin-left:-10px;
+        color:#fbbd2f;
+    }
+    
+/*landPage*/
+    .page[data-page=land] {    
+        position:fixed;        
+        width:100vw;
+        height:100vh;
+        z-index:2000;                
+        background:#fff;        
         direction:ltr;
     }
-    #pageLogin header{
-        margin-top: 3vh;
-    }
-    #pageLogin header #logo {
-        display: block;    
-        margin:0 auto;
-        width: 240px;
-        height: 130px;
-        background: url('../images/logo/barcodeLogo2.png');    
+    .page[data-page=land] header{
+        text-align:center;
+        background:none;
+        margin-top:6vh;
+    }    
+    .page[data-page=land] main {
+        margin: 0 auto;
+        width: 372px;
+        height: 553px;
+        background: url(../images/misc/garbage.png) no-repeat center center;    
     }
 
 /*mainLists*/    
@@ -129,6 +187,9 @@ svg.fa-plus-circle {
     .item-checked {
         text-decoration: line-through;
     }
+    .item-waiting{
+        color:silver;
+    }
 
 /*addManualItem page*/
 .page[data-page='addManualItem'] main {
@@ -147,27 +208,85 @@ svg.fa-plus-circle {
         font-weight:bold;
     }
     .page[data-page='profile'] .imgProfile img {
-        width:100px;
-        height:100px;        
+        width:80px;
+        height:80px;        
     }
 
     .page[data-page='profile'] main .container-fluid{
         text-align:center;                        
     }
     .page[data-page='profile'] main .profileRow:nth-child(2){
-        margin-top:5vh;
+        margin-top:3vh;
     }
     .page[data-page='profile'] main .profileRow{
-        font-size:1.3em;
+        font-size:1em;
         background: #f6f4f6;
         margin-bottom:30px;
         
         position:relative;
     }
+    .page[data-page='profile'] a {
+        color:black;        
+    }
     .profileRow svg{
         position:absolute;
         right:30px;
-        top:10px;
+        top:9px;
     }
-    
-    
+
+
+/*notificationsList*/    
+    .page[data-page='notificationsList'] .notificationRow{        
+        border-bottom:1px solid silver;        
+        height:60px;                
+    }
+    .page[data-page='notificationsList'] .notificationRow:first-child{        
+        margin-top:-11px;
+        border-top:1px solid silver;
+    }
+    .page[data-page='notificationsList'] .notificationRow div:first-child{
+        font-size:0.45em;
+        line-height:30px;
+    }
+    .page[data-page='notificationsList'] .notificationRow div:last-child{
+        font-size:0.8em;
+        line-height:50px;
+    }
+    .page[data-page='notificationsList'] .notificationRow.isNew{
+        font-weight:bold;
+        background: #f6f4f6
+    }
+
+/*specificNotification*/
+    .page[data-page='specificNotification'] header:nth-child(2){
+        text-align:center;
+        margin-top:5vh;
+        height:50px;
+        line-height:50px;
+        font-weight:bold;
+    }
+    .page[data-page='specificNotification'] main{
+        margin-top:5vh;
+        font-size:0.7em;
+        text-align:center;
+    }
+    .page[data-page='specificNotification'] main button.addProductToInventory{
+        width:150px;
+        border-radius:10px;
+        outline:none;
+        box-shadow:1px 1px silver;
+    }
+/*addToInventory*/
+    #formAddToInventory {
+        font-size: 0.7em;
+    }
+
+/*scanDemo*/
+    #scanDemo main{
+        margin:50px auto;
+        width:300px;        
+    }
+    #scanDemo .alert{
+        display:block;
+        visibility:hidden;
+    }

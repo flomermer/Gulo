@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css?family=Alef');
+*{
+    margin:0;
+    padding:0;
+}
+header, main, nav, article, section, footer{
+    display:block;
+}
+#navbarContent{
+    direction:rtl;
+    font-size:1.2em;
+}
+body {
+    font-family: 'Alef', sans-serif;
+}
+.tableDB{
+    direction:rtl;
+}
+.tableDB tr {
+    cursor: pointer;
+}
+
+.tableDB > tbody > tr > td {
+    vertical-align: middle;
+}

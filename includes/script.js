@@ -1,70 +1,68 @@
-﻿jQuery.fn.exists = function () { return this.length > 0; }
-jQuery.fn.filterByData = function (field, val) {
-    return $(this).filter(function () {
-        return ($(this).data("key")[field] == val)
-    });
-}
-
-function switchPage(page) {
+﻿function switchPage(page) {    
     var targetPage;
     if ($.type(page) == 'string')
         targetPage = page;
     else
         targetPage = $(this).attr("data-target");
 
-    var currPage = $(".page:visible").attr("data-page");
+    var currPage = $(".page:visible").attr("data-page");    
     
-    if (targetPage == 'profile' && currPage == 'profile') //toggle profile up & down by clicking footer
-        targetPage = lastPage;
-    else if (targetPage != currPage)
-        lastPage = $(".page:visible").attr("data-page");
+    if (SETTINGS.isInProfile == false) {                
+        if (targetPage == 'profile') {            
+            SETTINGS.isInProfile = true;
+            SETTINGS.LAST_PAGE = $(".page:visible").attr("data-page");
+        }
+    } else { //already navigates in profile        
+        if (targetPage == 'profile' && currPage=="profile") {            
+            targetPage = SETTINGS.LAST_PAGE;
+            SETTINGS.isInProfile = false;            
+        } 
+    }   
 
+    if (targetPage == 'profile') {
+        $("#logoRow").show();
+        $("#profileRow").hide();
+    } else {
+        $("#logoRow").hide();
+        $("#profileRow").show();
+    }
+    
     var effect = $(".page[data-page='" + targetPage + "']").attr("data-effect");
     if (effect === undefined)
         effect = 'fade';
-
-    navigation(targetPage);
+        
     $(".page:visible").hide();
-    $(".page[data-page='" + targetPage + "']").show(effect, '', 500);       
+    $(".page[data-page='" + targetPage + "']").show(effect, '', 300);       
 }    
-function goBack() {
-    switchPage(lastPage);
-}
-function navigation(page) {
-    if (page == 'profile') {
-        $("#logoRow").show();
-        $("#profileRow").hide();        
-    } else {
-        $("#logoRow").hide();
-        $("#profileRow").show();        
-    }
-}
 
+
+function setDynamicField(tableName,field,val,whereField,whereVal,callback) {
+    $.ajax({
+        type: "GET",
+        data: { tableName: tableName, field: field, val: val, whereField: whereField, whereVal: whereVal },
+        url: "server/set/setDynamicField.php",
+        success: function (data) {                        
+            if (callback != undefined)
+                callback();
+        }
+    });
+}
 /*mainLists*/
+    function renderMainLists(lists) {
+        $("#mainLists").empty();    
+        $.map(lists, function (list) {
+            renderMainListItem(list);
+        })
+    }
     function renderMainListItem(mainListObj) {
         var $mainListItem = $("<div class='row main-list'></div>");
         $mainListItem.data('key', mainListObj);
         $mainListItem.append("<div class='col-6 text-right'>" + mainListObj.listName + "</div>");
         $mainListItem.append("<div class='col-4'><span class='quantity'>" + mainListObj.quantity + "</span> מוצרים</div>");
         $mainListItem.append("<div class='col-2 text-left'><span class='fas fa-angle-left'></span></div>");
-        $("#mainLists").append($mainListItem);
-        console.log(mainListObj);        
-    }
-
-    function loadMainListsFromDB() {
-        $("#mainLists").empty();
-        $.ajax({
-            url: "server/get/getLists.php?user_id=" + USER_ID,
-            success: function (json) {
-                console.log(json);
-                $.map(json, function (list) {
-                    renderMainListItem(list);
-                })        
-            }
-        })        
+        $("#mainLists").append($mainListItem);        
     }
     
-
 /*addMainList*/
     function newList_addShareMember() {                        
         var $newMemberRow = $("<div class='form-group row text-right rowNewMember'></div>");                
@@ -93,23 +91,24 @@ function navigation(page) {
     function addMainList(event) {
         event.preventDefault();
         var listName = $("input[name='txtAddMainListName']").val();
-        var formData = $("#formAddMainList").serialize() + "&user_id=" + USER_ID;
+        var formData = $("#formAddMainList").serialize() + "&user_id=" + SETTINGS.USER_ID;
 
-        $(".highlightBorder").removeClass("highlightBorder");
+        $("#formAddMainList .highlightBorder").removeClass("highlightBorder");
+        $("#formAddMainList .alert").hide();
         $.ajax({
             type: "GET",
             url: "server/set/insertList.php",
             data: formData,
             success: function (newID) {                
                 if (~newID.indexOf("error")) {
-                    alert(newID);
-                    alert("אירעה שגיאה. בדוק חיבור לרשת ונסה שנית");
+                    $("#formAddMainList .alert").text("אירעה שגיאה. בדוק חיבור לרשת").show();
                     return false;
                 } else if (~newID.indexOf("notExists")) {
                     var badID = newID.split(":")[1];
                     $("input[name='txtAddMainListMember[]']").filter(function () {
                         return ($(this).val() == badID)
                     }).addClass("highlightBorder");
+                    $("#formAddMainList .alert").text("מספר מזהה אינו חוקי").show();
                     return false;
                 }                
                 renderMainListItem({
@@ -172,6 +171,9 @@ function navigation(page) {
         if (item.isChecked==1)
             $newLI.addClass("item-checked");
 
+        if (item.isWaiting == 1)
+            $newLI.addClass("item-waiting");
+
         $ul.append($newLI);
         increaseSublistQuantity(item.category);
     }
@@ -233,7 +235,7 @@ function navigation(page) {
             isChecked = 0;
         else 
             isChecked = 1;
-        
+
         $.ajax({
             type: "GET",
             data: { item_id: item.id, category: category, isChecked: isChecked },
@@ -286,20 +288,244 @@ function navigation(page) {
             }
         })                        
     }
-    
-$("document").ready(function () {
-    USER_ID = 1;
-    lastPage = '';     
 
-    $(".goBack").click(goBack);
-    $(".switchPage").click(switchPage);
-    $(".toggleMenu").click(function () { switchPage("profile"); });
-    /*initial functions*/
-    loadMainListsFromDB();    
+/*profile*/
+    function setNotificationBadger(val) {
+        if (val == -1) {
+            val = Number($(".notificationBadger:first").text()) - Number(1);
+        }
+
+        if (val == 0) {
+            $(".notificationBadger").hide();
+            $(".spanNotificationCounter").hide();
+        } else {
+            $(".notificationBadger").text(val).show();
+            $(".spanNotificationCounter").text(" (" + val + ")").show();
+        }
+    }
+    function showNotifications() {
+        $("#notificationsList").empty();
+        $.ajax({
+            type: "GET",
+            data: { user_id: SETTINGS.USER_ID },
+            url: "server/get/getNotifications.php",
+            success: function (json) {
+                $.map(json, function (notification) {
+                    renderNotificationRow(notification);                    
+                })
+                switchPage("notificationsList");
+            }
+        })
+    }
+    function showSpecificNotification(notification) {                        
+        var mainContent='';
+        $("#specificNotificationTopic").text(notification.topic);
+                
+        if (notification.type_id == '1') { //unknown product was scanned                    
+            mainContent = "<h5>ברקוד אינו מזוהה: " + notification.id_1 + "</h4>";
+            mainContent += "המוצר שנסרק בשעה " + notification.time + " בתאריך " + notification.date + "<BR>לא נמצא במאגר Gulo.<BR>";
+            mainContent += "עזרו לנו ולחברי Gulo להכיר את המוצר <BR> ועל הדרך תרוויחו 10 נק(:<BR><BR>";
+            if (notification.isChecked == '0')
+                mainContent += "<button class='switchPage addProductToInventory' data-target='addToInventory'>הוספת מוצר<br />למאגר Gulo</button>";
+            else
+                mainContent += "המוצר ממתין לאישור<BR><B>מערכת Gulo מודה לך על עזרתך.</B>";
+
+            $(".page[data-page='specificNotification'] main").html(mainContent);
+            $(".page").hide();
+            $(".page[data-page='specificNotification']").show();
+
+            $("#formAddToInventory input[name=productBarcode]").val(notification.id_1);
+            $("#formAddToInventory input[name=notification_id]").val(notification.id);
+        }
+       
+        if (notification.isNew == 1) {
+            setDynamicField("238_notifications", "isNew", 0, "id", notification.id);
+            setNotificationBadger(-1); //decrease notification badger
+            $(".notificationRow").filterByData("id", notification.id).removeClass("isNew").data("key").isNew = 0;                                    
+        }
+    }
+    function renderNotificationRow(notification) {                
+        var $newRow = $("<div class='row notificationRow'></div>");
+        if (notification.isNew == '1')
+            $newRow.addClass("isNew");
+        $newRow.data("key", notification);
+        var $col2 = $("<div class='col-2 text-center'></div>");
+        var $col10 = $("<div class='col-10 text-center'></div>");
+        $col10.text(notification.topic);
+        $col2.html(notification.time + "<BR>" + notification.date);
+
+        $newRow.append($col2).append($col10);
+
+        $("#notificationsList").append($newRow);
+    }    
+/*addToInventory*/
+    function sortBrandsDatalistByCategory() {
+        var categoryVal = $(this).val();
+        var category = $("#datalist_categories").find("option[value='" + categoryVal + "']").data("key");
+        if (category == undefined)
+            return false;
+        $("#datalist_brands option").filter(function () {
+            $(this).attr("disabled", true);
+            var isFind = false;            
+            $.each($(this).data("categories"), function (index, cat) {
+                if (cat == category.category_id)
+                    isFind = true;
+            });
+            if (isFind)                 
+                $(this).attr("disabled", false);            
+        });
+    }
+    function renderBrandsDatalist(brands) {
+        var $datalist = $("#datalist_brands");
+        $datalist.empty();
+        $.map(brands, function (brand) {
+            renderDatalistBrandsOption(brand, $datalist);
+        })
+    }
+    function renderCategoriesDatalist(categories) {
+        var $datalist = $("#datalist_categories");
+        $datalist.empty();
+        $.map(categories, function (category) {
+            renderDatalistCategoriesOption(category, $datalist);
+        })
+    }
+    function renderCapacityUnitsDatalist(capacity_units) {
+        var $datalist = $("#datalist_capacity_units");
+        $datalist.empty();
+        $.map(capacity_units, function (unit) {
+            renderDatalistCapacityUnitsOption(unit, $datalist);
+        })
+    }
+    function renderDatalistCategoriesOption(category, $datalist) {
+        var $option = $("<option value='" + category.category_name + "'></option>");
+        $option.data("key", category);
+        $datalist.append($option);
+    }
+    function renderDatalistBrandsOption(brand, $datalist) {        
+        var $option = $("<option value='" + brand.brand_name + "'></option>");
+        $option.attr("data-categories", "[" + brand.brand_categories + "]");
+        $option.data("key", brand);
+        $datalist.append($option);
+    }
+    function renderDatalistCapacityUnitsOption(unit, $datalist) {                
+        var $option = $("<option value='" + unit.symbol + "'></option>");        
+        $option.data("key", unit);
+        $datalist.append($option);
+    }
+    function addToInventoryGo(event) {
+        event.preventDefault();
+        var notification_id = $("#formAddToInventory input[name=notification_id]").val();                
+        var notification = $(".notificationRow").filterByData("id", notification_id).data("key");
+
+        var category, category_id, brand, brand_id, capacity_unit, capacity_unit_id;
+
+        category = $("#datalist_categories").find("option[value='" + $("input[name=productCategory]").val() + "']").data("key");
+        if (category != undefined)
+            category_id = category.category_id;
+        else
+            category_id = null;
+        
+        brand = $("#datalist_brands").find("option[value='" + $("input[name=productBrand]").val() + "']").data("key");
+        if (brand != undefined)
+            brand_id = brand.brand_id;
+        else
+            brand_id = null;
+
+        capacity_unit = $("#datalist_capacity_units").find("option[value='" + $("input[name=productCapacityUnits]").val() + "']").data("key");
+        if (capacity_unit != undefined)
+            capacity_unit_id = capacity_unit.id;
+        else
+            capacity_unit_id = null;
+
+        var formData = $("#formAddToInventory").serialize() + "&category_id=" + category_id + "&brand_id=" + brand_id + "&capacity_unit_id=" + capacity_unit_id + "&user_id=" + SETTINGS.USER_ID+"&list_id="+notification.id_2;
+        $.ajax({
+            type: "GET",
+            data: formData,
+            url: "server/set/insertManualToInventory.php",
+            success: function (data) {                                    
+                increaseMainListQuantity(notification.id_2); //increase listID quantity(insert manual WAITING item to list)
+
+                notification.isChecked = 1;                            
+                showSpecificNotification(notification);
+                $("#formAddToInventory").trigger("reset");
+            }
+        })
+    }
+
+/*renders*/
+    function renderUserData(user) {    
+        $(".spanUserName").text(user.firstname + " " + user.lastname);
+        $(".spanUserID").text(SETTINGS.USER_ID); 
+    }
+    function renderNotifications(notifications) {
+        $("#notificationsList").empty();
+        var newNotifications = notifications.filter(function (notification) {
+            return notification.isNew == '1';
+        });
+        $.map(notifications, function (notification) {
+            renderNotificationRow(notification);
+        })    
+        setNotificationBadger(newNotifications.length);
+    }
+    function renderSystemData(system) {
+        renderBrandsDatalist(system.brands);
+        renderCategoriesDatalist(system.categories);
+        renderCapacityUnitsDatalist(system.capacity_units);
+    }
+
+/*initialization*/
+function syncApp(callback) {
+    var $sync = $("#sync");
+    $sync.find("svg").addClass("fa-spin");
+
+    $.ajax({
+        type: "GET",
+        data: { user_id: SETTINGS.USER_ID },
+        url: "server/get/getInitialData.php",
+        success: function (json) {            
+            console.log(json);            
+            setTimeout(function () {
+                $sync.find("svg").removeClass("fa-spin");
+            }, 1000);
+
+            /*mainLists data*/
+                renderMainLists(json.mainLists);
+            /*user data*/
+                renderUserData(json.user);                
+            /*system data*/
+                renderSystemData(json.system);
+            /*notifications*/
+                renderNotifications(json.notifications);
+            
+            if (callback != undefined)
+                callback();
+        }
+    });
+}
+function initializeApp() { 
+    $(".page[data-page=land]").show();
+    SETTINGS = { //global data
+        USER_ID: $("#hdnSettings").attr("data-user_id"),
+        CURR_PAGE: 'mainLists',
+        LAST_PAGE: '',
+        isInProfile: false        
+    }    
+    var callback = function () {
+        setTimeout(function () {
+            switchPage(SETTINGS.CURR_PAGE);
+        }, 2000);        
+    }
+
+    syncApp(callback);    
+}
+$("document").ready(function () {            
+    initializeApp();
+
+    $("body").on("click", ".switchPage", switchPage);
+    $(".toggleMenu").click(function () { switchPage("profile"); });    
 
     /*mainLists*/
         $(".page[data-page='mainLists']").on("click", ".main-list", mainListClick);        
-
 
     /*addMainList*/
         $(".page[data-page='addMainList'] #btnNewListSharePlus").click(newList_addShareMember);
@@ -311,163 +537,16 @@ $("document").ready(function () {
 
     /*manuallyAddItem*/
         $(".page[data-page='addManualItem'] #formAddManualItem").submit(addManualItem);    
-    
+
+    /*profile*/
+        $("#sync").click(function () { syncApp(); });
+
+    /*notificationsList*/
+        $(".page[data-page='notificationsList'] #notificationsList").on("click", ".notificationRow", function () { showSpecificNotification($(this).data("key")); });    
+
+    /*addToInventory*/
+        $("input[list=datalist_categories]").focusout(sortBrandsDatalistByCategory); //datalist will show only relevant brands by selected category
+        $("#formAddToInventory").submit(addToInventoryGo);
+                
 })
 
-
-/*JSONS DATA FOR EXAMPLE*/
-    function listItemsDataExample() {
-        return {            
-            subLists: [
-                {
-                    subListID: '1',
-                    subListName: 'מטבח',
-                    items: [
-                        {
-                            id: '1',
-                            name: 'חלב',
-                            category: '1'
-                        },
-                        {
-                            id: '2',
-                            name: 'ביצים',
-                            category: '1'
-                        },
-                        {
-                            id: '3',
-                            name: 'שמן קנולה',
-                            category: '1'
-                        },
-                    ]
-                },
-                {
-                    subListID: '2',
-                    subListName: 'שירותים ואמבטיה',
-                    items: [
-                        {
-                            id: '4',
-                            name: 'שמפו - פינוק - לשיער רגיל',
-                            category: '2'
-                        },
-                        {
-                            id: '5',
-                            name: 'מרכך שיער - פינוק',
-                            category: '2'
-                        },
-                        {
-                            id: '6',
-                            name: 'סבון גוף - dove',
-                            category: '2'
-                        },
-                        {
-                            id: '7',
-                            name: 'נייר טואלט - האגיס',
-                            category: '2'
-                        },
-                        {
-                            id: '4',
-                            name: 'שמפו - פינוק - לשיער רגיל',
-                            category: '2'
-                        },
-                        {
-                            id: '5',
-                            name: 'מרכך שיער - פינוק',
-                            category: '2'
-                        },
-                        {
-                            id: '6',
-                            name: 'סבון גוף - dove',
-                            category: '2'
-                        },
-                        {
-                            id: '7',
-                            name: 'נייר טואלט - האגיס',
-                            category: '2'
-                        }
-                    ]
-                },
-                {
-                    subListID: '3',
-                    subListName: 'ציוד משרדי',
-                    items: [
-                        {
-                            id: '8',
-                            name: 'עט ירוק',
-                            quantity: '5',
-                            category: '3'
-                        },
-                        {
-                            id: '9',
-                            name: 'עט כחול',
-                            quantity: 2,
-                            category: '3'
-                        },
-                        {
-                            id: '10',
-                            name: 'מהדק',
-                            category: '3'
-                        },
-                        {
-                            id: '11',
-                            name: 'מספריים',
-                            category: '3'
-                        },
-                        {
-                            id: '12',
-                            name: 'מחדד',
-                            category: '3'
-                        },
-                        {
-                            id: '8',
-                            name: 'עט ירוק',
-                            quantity: '5',
-                            category: '3'
-                        },
-                        {
-                            id: '9',
-                            name: 'עט כחול',
-                            quantity: 2,
-                            category: '3'
-                        },
-                        {
-                            id: '10',
-                            name: 'מהדק',
-                            category: '3'
-                        },
-                        {
-                            id: '11',
-                            name: 'מספריים',
-                            category: '3'
-                        },
-                        {
-                            id: '12',
-                            name: 'מחדד',
-                            category: '3'
-                        }
-                    ]
-                }
-            ]
-        }
-    }
-
-    function mainListsDataExample() {
-        return {  
-            mainLists: [
-                {
-                    listID: '1',
-                    listName: 'עדיאל בית',
-                    quantity: 3
-                },
-                {
-                    listID: '2',
-                    listName: 'עדיאל משרד',
-                    quantity: 5
-                },
-                {
-                    listID: '3',
-                    listName: 'תומר גינה',
-                    quantity: 8
-                }
-            ]            
-        }
-    }

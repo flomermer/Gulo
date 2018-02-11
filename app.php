@@ -1,13 +1,13 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>    
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Gulo</title>    
 
-    <!-- Jquery CDN-->
+    <!-- Jquery CDN-->    
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>    
-    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>    
     
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
@@ -15,15 +15,28 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
     
     <link rel="stylesheet" href="includes/style.css" />
+    <script src="includes/myPlugins.js"></script>
     <script src="includes/script.js"></script>
        
 </head>
 <body>
 <?php 
     //$id = date("dmYHis");    
+    $user_id = $_GET["user_id"];
 ?>
     <div>
-         <div class="page" data-page="mainLists" data-ajax="server/get/getLists.php">
+        <div class="page" data-page="land">
+            <header class="container-fluid">
+                <div class="row">
+                    <h1 class="col-12 gulo">Gulo</h1>
+                    <h2 class="col-12 thinkSmarter">Think Smarter.</h2>
+                </div>
+            </header>
+            <main>
+
+            </main>
+        </div>
+        <div class="page" data-page="mainLists">
             <header class="container-fluid">
                 <div class="row">
                     <div class="col-2"></div>
@@ -31,7 +44,7 @@
                     <div class="col-2 text-left">                        
                         <span class="toggleMenu">
                             <i class="fas fa-bars"></i>
-                            <span class="badge">3</span>
+                            <span class="badge notificationBadger">3</span>
                         </span>
                     </div>
                 </div>            
@@ -73,7 +86,10 @@
                     </div>
                     <div class="col-8 text-center">רשימה חדשה</div>
                     <div class="col-2 text-left">
-                        <span class="toggleMenu"><i class="fas fa-bars"></i></span>
+                        <span class="toggleMenu">
+                            <i class="fas fa-bars"></i>
+                            <span class="badge notificationBadger">3</span>
+                        </span>
                     </div>
                 </div>
             </header>
@@ -91,6 +107,9 @@
                                     <i class="fas fa-user-plus"></i>
                                 </span>
                             </div>
+                        </div>
+                        <div class="alert alert-danger text-center">
+                            מספר מזהה לא חוקי
                         </div>
                         <div class="form-group row">
                             <div class="col-12 text-center">
@@ -114,7 +133,10 @@
                     </div>
                     <div class="col-8 text-center" id="mainListName">שם הרשימה</div>
                     <div class="col-2 text-left">                        
-                        <span class="toggleMenu"><i class="fas fa-bars"></i></span>
+                        <span class="toggleMenu">
+                            <i class="fas fa-bars"></i>
+                            <span class="badge notificationBadger">3</span>
+                        </span>
                     </div>
                 </div>
             </header>
@@ -164,7 +186,10 @@
                     </div>
                     <div class="col-8 text-center">הוספת פריט ידנית</div>
                     <div class="col-2 text-left">
-                        <span class="toggleMenu"><i class="fas fa-bars"></i></span>
+                        <span class="toggleMenu">
+                            <i class="fas fa-bars"></i>
+                            <span class="badge notificationBadger">3</span>
+                        </span>
                     </div>
                 </div>
             </header>
@@ -202,7 +227,10 @@
                     </div>
                     <div class="col-8 text-center">הזמנת משלוח</div>
                     <div class="col-2 text-left">
-                        <span class="toggleMenu"><i class="fas fa-bars"></i></span>
+                        <span class="toggleMenu">
+                            <i class="fas fa-bars"></i>
+                            <span class="badge notificationBadger">3</span>
+                        </span>
                     </div>
                 </div>
             </header>
@@ -221,11 +249,11 @@
             <header class="container-fluid">
                 <div class="row">
                     <div class="col-2 text-right">
-                        <span class="goBack">
+                        <span class="toggleMenu">
                             <i class="far fa-arrow-alt-circle-right"></i>
                         </span>
                     </div>
-                    <div class="col-8 text-center">הפרופיל שלי</div>
+                    <div class="col-8 text-center"><span class="spanUserName"></span></div>
                     <div class="col-2 text-left"><i class="fas fa-user-circle"></i></div>                    
                 </div>
             </header>
@@ -234,7 +262,7 @@
                     <div class="imgProfile">
                         <img src="images/misc/profilePic.png"/>
                         <div class="col-12 text-center">
-                            מספר מזהה: 202212
+                            מספר מזהה: <span class="spanUserID"></span>
                         </div>
                     </div>                        
                     
@@ -244,10 +272,10 @@
                             ההזמנות שלי
                         </div>
                     </div>                    
-                    <div class="row profileRow">                        
+                    <div class="row profileRow switchPage" id="aNotifications" data-target="notificationsList">                        
                         <div class="col-12 text-center">
                             <i class="fas fa-comment"></i>
-                            התראות <span class="notification-counter"></span>
+                            התראות <span class="spanNotificationCounter"></span>
                         </div>
                     </div>                    
                     <div class="row profileRow">                                                
@@ -256,21 +284,146 @@
                             כתבו לנו
                         </div>
                     </div>                          
+                    <div class="row profileRow" id="sync">
+                        <div class="col-12 text-center">                            
+                                <i class="fas fa-sync fa-sm"></i>
+                                סנכרון                            
+                        </div>
+                    </div>
+                    <a href="logout.php">
                     <div class="row profileRow">
-                        <div class="col-12 text-center">
-                            <i class="fas fa-power-off"></i>    
-                            התנתקות
+                        <div class="col-12 text-center">                            
+                                <i class="fas fa-power-off"></i>
+                                התנתקות                                
                         </div>
                     </div>                          
+                    </a>
                 </div>
             </main>
         </div>
+        
+        <div class="page" data-page="notificationsList">
+            <header class="container-fluid">
+                <div class="row">
+                    <div class="col-2 text-right">
+                        <span class="switchPage" data-target="profile">
+                            <i class="far fa-arrow-alt-circle-right"></i>
+                        </span>
+                    </div>
+                    <div class="col-8 text-center">                        
+                        התראות                        
+                    </div>
+                    <div class="col-2 text-left">
+                        <i class="fas fa-comment"></i>
+                    </div>
+                </div>
+            </header>
+            <main class="container-fluid" id="notificationsList">                
+                <!--
+                    <div class="row notificationRow isNew" data-key={id:3, type_id:1, isNew:0}>
+                        <div class="col-2 text-center">
+                            12:30
+                            <br />
+                            20/2/03
+                        </div>
+                    <div class="col-10 text-center">מוצר נסרק ולא זוהה</div>                    
+                </div>                                                
+                -->
+            </main>           
+        </div>
+        <div class="page" data-page="specificNotification">
+            <header class="container-fluid">
+                <div class="row">
+                    <div class="col-2 text-right">
+                        <span class="switchPage" data-target="notificationsList">
+                            <i class="far fa-arrow-alt-circle-right"></i>
+                        </span>
+                    </div>
+                    <div class="col-8 text-center">
+                       התראות
+                    </div>
+                    <div class="col-2 text-left">
+                        <i class="fas fa-comment"></i>
+                    </div>
+                </div>
+            </header>
+            <header class="container-fluid">
+                <div class="row">
+                    <div class="col-12 text-center" id="specificNotificationTopic">
+                    </div>
+                </div>                
+            </header>
+            <main class="container">
+                <!--render from jquery depends on the specific notification clicked-->
+            </main>
+        </div>
+
+        <div class="page" data-page="addToInventory">
+            <header class="container-fluid">
+                <div class="row">
+                    <div class="col-2 text-right">
+                        <span class="switchPage" data-target="specificNotification">
+                            <i class="far fa-arrow-alt-circle-right"></i>
+                        </span>
+                    </div>
+                    <div class="col-8 text-center">
+                        הוספת מוצר למאגר
+                    </div>
+                    <div class="col-2 text-left">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                </div>
+            </header>
+            <main class="container">
+                <form id="formAddToInventory" method="post">
+                    <div class="form-group row text-right">
+                        <label for="productBarcode" class="col-3 text-right col-form-label">ברקוד:</label>
+                        <div class="col-9 text-right">
+                            <input type="text" class="form-control-plaintext" name="productBarcode" readonly required value="88888"/>
+                        </div>                        
+                    </div>
+                    <div class="form-group text-right">
+                        <label for="productName">*שם הפריט:</label>
+                        <input type="text" class="form-control" name="productName" placeholder="לדוגמא: חומוס"  required />
+                    </div>
+                    <div class="form-group text-right">
+                        <label for="datalist_categories">*קטגוריה:</label>
+                        <input type="text" class="form-control" list="datalist_categories" name="productCategory" placeholder="לדוגמא: מטבח" required/>
+                    </div>
+                    <div class="form-group text-right">
+                        <label for="datalist_brands">*מותג:</label>
+                        <input type="text" class="form-control" list="datalist_brands" name="productBrand" placeholder="לדוגמא: צבר " required/>
+                    </div>
+                    <div class="form-group row text-right">
+                        <label for="datalist_brands" class="col-4 col-form-label">קיבולת:</label>            
+                        <div class="col-4 text-right">
+                            <input type="number" class="form-control text-center" name="productCapacity" placeholder="750" min="0" step="0.01"/>
+                        </div>
+                        <div class="col-4 text-right">
+                            <input type="text" name="productCapacityUnits" list="datalist_capacity_units" class="form-control text-center" placeholder="גרם" />
+                        </div>                                
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-lg">
+                                <i class="fas fa-plus-circle"></i> הוספה למאגר 
+                            </button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="notification_id" />
+                </form>
+                <datalist id="datalist_categories" dir="rtl"></datalist>                                   
+                <datalist id="datalist_brands" dir="rtl"></datalist>
+                <datalist id="datalist_capacity_units" dir="rtl"></datalist>
+            </main>
+        </div>
+       
         <footer class="footer fixed-bottom main">                        
             <div class="switchPage" data-target="profile">
                 <div class="row container-fluid content" id="profileRow">                   
                     <div class="col-2 text-left"><i class="fas fa-user-circle fa-lg"></i></div>
-                    <div class="col-8 text-center">Adiel Perez</div>                        
-                    <div class="col-2 text-right"><i class="fas fa-circle fa-sm"></i></div>
+                    <div class="col-8 text-center"><span class="spanUserName"><!--profile name--></span></div>                        
+                    <!--<div class="col-2 text-right"><i class="fas fa-circle fa-sm"></i></div>-->
                 </div>            
                 <div class="row container-fluid" id="logoRow">
                     <div class="container text-center">
@@ -279,6 +432,8 @@
                 </div>
             </div>
         </footer>
-    </div>    
+    </div>   
+    
+    <input type="hidden" id="hdnSettings" data-user_id="<?php echo $user_id?>" />
 </body>
 </html>
