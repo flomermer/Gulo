@@ -1,17 +1,16 @@
 {
   "ExpandedNodes": [
     "",
-    "\\admin",
     "\\admin\\includes",
     "\\admin\\includes\\bootstrap",
     "\\admin\\includes\\bootstrap\\3.3.5",
     "\\admin\\includes\\bootstrap\\3.3.5\\css",
     "\\admin\\server",
-    "\\admin\\server\\get",
-    "\\images\\logo",
     "\\includes",
-    "\\server\\get"
+    "\\server",
+    "\\server\\get",
+    "\\server\\set"
   ],
-  "SelectedNode": "\\admin\\inventory.php",
+  "SelectedNode": "\\server\\dbDetails.php",
   "PreviewInSolutionExplorer": false
 }

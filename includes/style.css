@@ -284,7 +284,8 @@ svg.fa-plus-circle {
 /*scanDemo*/
     #scanDemo main{
         margin:50px auto;
-        width:300px;        
+        width:300px; 
+        text-align:center;        
     }
     #scanDemo .alert{
         display:block;

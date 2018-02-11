@@ -84,6 +84,12 @@ function setDynamicField(tableName,field,val,whereField,whereVal,callback) {
                 console.log(json);
                 $("#mainListName").text(list.listName).data("key",list);
                 renderListItems(json);
+
+                var totalItems = 0;
+                $.map(json.subLists, function (sublist) {
+                    totalItems += sublist.items.length;
+                })
+                setMainListQunatity(list.listID, totalItems);
                 switchPage("mainListItems");        
             }
         })               
@@ -127,6 +133,7 @@ function setDynamicField(tableName,field,val,whereField,whereVal,callback) {
 /*mainListItems*/
 
     function renderListItems(data) {
+        console.log(data.subList);
         $(".page[data-page='mainListItems'] .ul-main-list").empty();
         var subLists = data.subLists;
         $.map(subLists, function (subList) {
@@ -194,6 +201,12 @@ function setDynamicField(tableName,field,val,whereField,whereVal,callback) {
     function decreaseMainListQuantity(listID) {
         var $mainList = $(".main-list").filterByData('listID', listID);
         var newQuantity = $mainList.data("key").quantity - 1;
+        $mainList.data("key").quantity = newQuantity;
+        $mainList.find(".quantity").html(newQuantity);
+    }
+    function setMainListQunatity(listID, quantity) {
+        var $mainList = $(".main-list").filterByData('listID', listID);
+        var newQuantity = quantity;
         $mainList.data("key").quantity = newQuantity;
         $mainList.find(".quantity").html(newQuantity);
     }
@@ -508,12 +521,13 @@ function initializeApp() {
         USER_ID: $("#hdnSettings").attr("data-user_id"),
         CURR_PAGE: 'mainLists',
         LAST_PAGE: '',
-        isInProfile: false        
+        isInProfile: false,
+        LAND_TIMEOUT: 2000
     }    
     var callback = function () {
         setTimeout(function () {
             switchPage(SETTINGS.CURR_PAGE);
-        }, 2000);        
+        }, SETTINGS.LAND_TIMEOUT);        
     }
 
     syncApp(callback);    
