@@ -46,7 +46,8 @@ if($result->num_rows==0){ //barcode not exists-> send mail to insert manually an
         $sql = "UPDATE 238_notifications SET isNew=1, datetime=NOW() WHERE id=$notification_id";
         $conn->query($sql);
     }
-    sendMail($to);
+    echo "notFound";
+    //sendMail($to);
 } else {
     $sql = "SELECT barcode FROM 238_list_products WHERE list_id=$list_id AND barcode=$barcode LIMIT 1";
     $result = $conn->query($sql);
@@ -94,8 +95,7 @@ function sendMail($to){
     $mail->Subject = 'מוצר לא זוהה. יש להיכנס למסך ההתראות';
     $mail->Body    = $bodyContent;
     if(!$mail->send()) {
-        echo 'Message could not be sent.';
-        echo 'Mailer Error: ' . $mail->ErrorInfo;
+        echo "mailNotSent";
     } else {
         echo 'mailSent';
     }

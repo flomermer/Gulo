@@ -1,4 +1,13 @@
-﻿function switchPage(page) {    
+﻿function objectifyForm(formArray) {//serialize data function
+
+    var returnArray = {};
+    for (var i = 0; i < formArray.length; i++) {
+        returnArray[formArray[i]['name']] = formArray[i]['value'];
+    }
+    return returnArray;
+}
+
+function switchPage(page) {    
     var targetPage;
     if ($.type(page) == 'string')
         targetPage = page;
@@ -450,12 +459,30 @@ function setDynamicField(tableName,field,val,whereField,whereVal,callback) {
         else
             capacity_unit_id = null;
 
-        var formData = $("#formAddToInventory").serialize() + "&category_id=" + category_id + "&brand_id=" + brand_id + "&capacity_unit_id=" + capacity_unit_id + "&user_id=" + SETTINGS.USER_ID+"&list_id="+notification.id_2;
+        var formData = objectifyForm($("#formAddToInventory").serializeArray());
+            formData.category_id = category_id;
+            formData.brand_id = brand_id,
+            formData.capacity_unit_id = capacity_unit_id;
+            formData.user_id = SETTINGS.USER_ID;
+            formData.list_id = notification.id_2;
+                
+        $.post('server/set/scanBarcode.php', formData, function (data) {
+            console.log(data);
+            return false;
+            increaseMainListQuantity(notification.id_2); //increase listID quantity(insert manual WAITING item to list)
+
+            notification.isChecked = 1;
+            showSpecificNotification(notification);
+            $("#formAddToInventory").trigger("reset");
+        });
+        /*
         $.ajax({
             type: "GET",
             data: formData,
-            url: "server/set/insertManualToInventory.php",
-            success: function (data) {                                    
+            url: "server/set/insertManualItemToInventory.php",
+            success: function (data) {
+                console.log(data);
+                return false;
                 increaseMainListQuantity(notification.id_2); //increase listID quantity(insert manual WAITING item to list)
 
                 notification.isChecked = 1;                            
@@ -463,6 +490,7 @@ function setDynamicField(tableName,field,val,whereField,whereVal,callback) {
                 $("#formAddToInventory").trigger("reset");
             }
         })
+        */
     }
 
 /*renders*/
@@ -524,8 +552,14 @@ function initializeApp() {
         LAST_PAGE: '',
         isInProfile: false,
         LAND_TIMEOUT: 2000
-    }        
-    syncApp();    
+    }    
+    var callback = function () {
+        setTimeout(function () {
+            switchPage(SETTINGS.CURR_PAGE);
+        }, SETTINGS.LAND_TIMEOUT);        
+    }
+
+    syncApp(callback);    
 }
 $("document").ready(function () {            
     initializeApp();

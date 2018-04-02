@@ -14,6 +14,8 @@ $capacity_unit_id   =   $_GET["capacity_unit_id"];
 $capacity_unit_name =   $_GET["productCapacityUnits"];
 $product_name       =   $_GET["productName"];
 
+
+
 if($capacity=='')
     $capacity='NULL';
 

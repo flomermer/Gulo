@@ -293,7 +293,8 @@ function initializeValues($conn){
                             (8718951001596,3,9,600,4,'תרסיס לניקוי')
                             ";
     $lists =  "INSERT INTO 238_lists (list_id,user_id,list_name) VALUES
-                            (1,1,'הבית שלי')                            
+                            (1,1,'הבית שלי'),
+                            (2,2,'הרשימה שלי')
                             ";
 
     $list_products = "INSERT INTO 238_list_products (list_id,barcode,quantity) VALUES

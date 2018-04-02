@@ -10,8 +10,42 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
-    <link rel="stylesheet" href="includes/style.css" />    
-   
+    <link rel="stylesheet" href="includes/style.css" />        
+    <?php
+    include('server/dbDetails.php');
+
+    $conn = new mysqli($conn_ip,$conn_username,$conn_password,$db_name);
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+    $conn->query("SET NAMES 'utf8'");
+
+
+    $sql = "SELECT * FROM 238_lists ORDER BY list_id ASC";
+    $result = $conn->query($sql);
+
+    while($rs = $result->fetch_assoc()) {
+        $list_id = $rs['list_id'];
+        $list_name = $rs['list_name'];
+        $datalist_lists .= "<option value='$list_id'>$list_name</option>";
+    }
+
+    $sql = "
+            SELECT products.*, brands.brand_name,
+                   CONCAT(products.capacity,' ',units.unit_symbol) As capacityStr, units.unit_symbol AS capacity_unit_symbol
+            FROM 238_products products
+            LEFT JOIN 238_products_brands brands ON products.brand_id=brands.brand_id
+            LEFT JOIN 238_capacity_units units ON products.capacity_unit_id=units.unit_id
+            ";
+    $result = $conn->query($sql);
+    while($rs = $result->fetch_assoc()) {
+        $barcode = $rs['barcode'];
+        $product_name = $rs['product_name'];
+        $brand = $rs['brand_name'];
+        $datalist_products .= "<option value='$barcode'>$product_name $brand</option>";
+    }
+    ?>
+
     <script>
          function formSend(event) {
              event.preventDefault();
@@ -25,10 +59,13 @@
              $(".alert").removeClass("alert-success").removeClass("alert-danger").html('<i class="fas fa-spinner fa-spin"></i>').css("visibility", "visible");
 
              $.post('server/set/scanBarcode.php', formData, function (data) {
+                 console.log(data);
                  if (data == 'success') { //חיישן זיהה את הברקוד במערכת גולו
                      $(".alert").text("מוצר נוסף בהצלחה לרשימה").addClass("alert-success").css("visibility", "visible");
                  } else if (data == 'mailSent') {
                      $(".alert").html("ברקוד לא קיים במערכת<BR>נשלח מייל למשתמש").addClass("alert-danger").css("visibility", "visible");
+                 } else if (data == 'mailNotSent' || data=='notFound') {
+                     $(".alert").html("ברקוד לא קיים במערכת").addClass("alert-danger").css("visibility", "visible");
                  } else if (data == 'noList') {
                      $(".alert").html("רשימה אינה קיימת במערכת").addClass("alert-danger").css("visibility", "visible");
                  } else {
@@ -55,7 +92,7 @@
             </div>            
             <div class="form-group row">
                 <label class="col-4 text-right">רשימה:</label>
-                <input type="number" class="form-control col-2" name="list_id" placeholder="מספר רשימה..." min="1" step="1" value="1" required />
+                <input type="text" class="form-control col-8" list="lists"  name="list_id" placeholder="מספר רשימה..." required />
             </div>            
             <div class="form-group row">
                 <div class="col-12 text-center">
@@ -66,8 +103,10 @@
             </div>
         </form>
         <datalist id="barcode">
-            <option value="4084500853553">סבון כלים - פיירי - קלאסי</option>
-            <option value="7290008096317">משחת שיניים - פרודונטקס</option>
+            <?php echo $datalist_products?>
+        </datalist>
+        <datalist id="lists">
+            <?php echo $datalist_lists?>
         </datalist>
     </main>    
 </body>

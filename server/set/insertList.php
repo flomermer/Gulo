@@ -1,5 +1,9 @@
 <?php include('../dbDetails.php'); ?>
 <?php
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+
 $user_id = $_GET["user_id"];
 $list_name = $_GET["txtAddMainListName"];
 $share_lists = $_GET["txtAddMainListMember"];
@@ -11,11 +15,13 @@ if ($conn->connect_error) {
 
 $conn->query("SET NAMES 'utf8'");
 
-foreach($share_lists as $shareID){
-    $result = $conn->query("SELECT user_id FROM 238_users WHERE user_id=$shareID");
-    if($result->num_rows==0 || $shareID==$user_id){
-        echo "notExists:$shareID";
-        exit();
+if (!(empty($share_lists))) {
+    foreach($share_lists as $shareID){
+        $result = $conn->query("SELECT user_id FROM 238_users WHERE user_id=$shareID");
+        if($result->num_rows==0 || $shareID==$user_id){
+            echo "notExists:$shareID";
+            exit();
+        }
     }
 }
 
@@ -27,10 +33,12 @@ if($conn->query($sql)==FALSE)
 
 $new_id = $conn->insert_id;
 
-foreach($share_lists as $shareID){
-    $sql = "INSERT INTO 238_lists_shares (list_id,user_id)
-            VALUES ($new_id,$shareID)";
-    $conn->query($sql);
+if (!(empty($share_lists))) {
+    foreach($share_lists as $shareID){
+        $sql = "INSERT INTO 238_lists_shares (list_id,user_id)
+                VALUES ($new_id,$shareID)";
+        $conn->query($sql);
+    }
 }
 
 echo $new_id;
